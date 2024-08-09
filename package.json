@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.30",
     "typescript": "^5.5.3",
     "vite": "^5.4.0"
   }
