@@ -240,7 +240,7 @@ declare namespace tyrano {
                 event: any;
                 rider: any;
                 studio: any;
-                chara: any;
+                chara: Chara;
 
                 init(): void;
                 checkUpdate(call_back: () => void): void;
@@ -336,6 +336,34 @@ declare namespace tyrano {
         vital: string[];
         pm: Record<string, any>;
         start(pm: Record<string, any>): void;
+    }
+
+    interface Chara {
+        kag: KAG;
+        init(): void;
+        getCharaNameArea(): JQuery;
+        getCharaName(convert_to_id?: boolean): string;
+        setNotSpeakerStyle(j_chara: JQuery): void;
+        setSpeakerStyle(j_chara: JQuery): void;
+        isPlusLighterEnabled(): boolean;
+        getCharaContainer(chara_name?: string, j_layer?: JQuery): JQuery;
+        setPartContainer(j_chara: JQuery): void;
+        wrapPartContainer(j_img: Element | JQuery): void;
+        getLipSyncParts(name: string, type?: "voice" | "text"): Array<{
+            j_frames: JQuery;
+            thresholds: number[];
+        }> | null;
+        getFrameAnimationSrcs(cpm: CharaDefinition, part: string, state: string): string[];
+        setFrameAnimation(cpm: CharaDefinition, part: string, state: string, j_frame_base: JQuery, preload_srcs: string[]): JQuery | null;
+        startFrameAnimation(state_obj: PartStateDefinition, j_frames: JQuery): void;
+        stopFrameAnimation(cpm: CharaDefinition): void;
+        stopAllFrameAnimation(): void;
+        restoreAllFrameAnimation(): void;
+        updateLipSyncWithVoice(value: number, target_parts: Array<{
+            j_frames: JQuery;
+            thresholds: number[];
+            current_index?: number;
+        }>, elapsed_time: number): void;
     }
 }
 declare global {
