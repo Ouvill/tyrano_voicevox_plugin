@@ -1,5 +1,6 @@
 import { EventBus, StrictEventMap } from "./event-bus";
-import { SpeakerInfo, Priority, SpeechTaskManager } from "./task-manager";
+import { Priority, SpeechTaskManager } from "./task-manager";
+import { VoiceVoxInfo } from "./models/speech-task";
 
 interface AppEventMap extends StrictEventMap {
     message: {
@@ -10,6 +11,7 @@ interface AppEventMap extends StrictEventMap {
     };
 }
 
+type SpeakerInfo = VoiceVoxInfo
 
 type Store = {
     voicevox: string,

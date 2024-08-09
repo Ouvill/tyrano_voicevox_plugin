@@ -1,37 +1,10 @@
+import { SpeechEngine } from "./models/engine/speech-engine";
+import { VoiceVoxEngine } from "./models/engine/voicevox-engine";
+import { SpeechTask } from "./models/speech-task";
+
 type EngineType = 'voicevox' | 'google' | 'aws'
 
-export type SpeakerInfo = VoiceVoxInfo
-
 export type Priority = 'queue' | 'immediate'
-
-interface VoiceVoxInfo {
-    type: 'voicevox',
-    url: string,
-    speaker: string,
-    style: string,
-    preset: string,
-}
-
-export interface SpeechTask {
-    text: string,
-    priority: 'queue' | 'immediate'
-    engineInfo: VoiceVoxInfo
-}
-
-interface SpeechEngine {
-    speak(task: SpeechTask): Promise<void>
-    cancel(): void
-}
-
-class VoiceVoxEngine implements SpeechEngine {
-    async speak(task: SpeechTask): Promise<void> {
-
-
-    }
-    cancel() {
-        // cancel
-    }
-}
 
 class EngineManager {
     private engines: Map<string, SpeechEngine> = new Map()
