@@ -13,5 +13,8 @@
     "openapi-typescript": "^7.3.0",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"
+  },
+  "dependencies": {
+    "openapi-fetch": "^0.10.6"
   }
 }
