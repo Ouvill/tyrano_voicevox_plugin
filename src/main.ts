@@ -2,6 +2,8 @@ import {EventBus, StrictEventMap} from "./models/event-bus";
 import {SpeechTaskManager} from "./models/speech-task-manager.ts";
 import {store} from "./models/store.ts";
 
+const PLUGIN_NAME = "TYRANO_VOICEVOX_PLUGIN"
+
 interface AppEventMap extends StrictEventMap {
     message: {
         chara_id: string;
@@ -18,7 +20,11 @@ const taskManager = new SpeechTaskManager()
  *
  * @return {void}
  */
-function init() {
+function init(): void {
+    if (!window.tyrano || !window.tyrano.plugin || window.tyrano.plugin[PLUGIN_NAME] !== undefined ) {
+       return
+    }
+
     const eventBus = EventBus.getInstance<AppEventMap>()
     // メッセージウィンドウが更新されたら発火
     TYRANO.kag.on("tag-text-message", (e) => {
