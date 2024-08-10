@@ -1,12 +1,12 @@
-import { SpeechEngine } from './speech-engine';
-import { SpeechTask } from '../speech-task';
+import {SpeechEngine} from './speech-engine';
+import {SpeechTask} from '../speech-task';
 import createClient from 'openapi-fetch';
-import { paths } from '../../types/voicevox-api';
+import {paths} from '../../types/voicevox-api';
 
 export class VoicevoxClient implements SpeechEngine {
-    private async getSpeakerId(speakerName: string, styleName: string): Promise<number> {
-        const client = createClient<paths>({ baseUrl: 'https://api.neospeech.com' });
-        const { data, error } = await client.GET('/speakers');
+    private async getSpeakerId(speakerName: string, styleName: string, baseUrl: string): Promise<number> {
+        const client = createClient<paths>({baseUrl});
+        const {data, error} = await client.GET('/speakers');
 
         if (error || !data) {
             throw new Error('Failed to fetch speakers');
@@ -15,22 +15,20 @@ export class VoicevoxClient implements SpeechEngine {
         if (!speaker) {
             throw new Error('Speaker not found');
         }
-        const style = speaker.styles.find((style) => style.name === styleName);
-        if (!style) {
-            throw new Error('Style not found');
-        }
+        const style = speaker.styles.find((style) => style.name === styleName) || speaker.styles[0];
         return style.id;
     }
 
     async generate(task: SpeechTask) {
-        const client = createClient<paths>({ baseUrl: task.engineInfo.url });
+        const client = createClient<paths>({baseUrl: task.engineInfo.url});
 
-        const speakerId = await this.getSpeakerId(task.engineInfo.speaker, task.engineInfo.style);
+        const speakerId = await this.getSpeakerId(task.engineInfo.speaker, task.engineInfo.style, task.engineInfo.url);
+
 
         // Generate audio query
-        const { data: audioQuery, error: queryError } = await client.POST("/audio_query", {
+        const {data: audioQuery, error: queryError} = await client.POST("/audio_query", {
             params: {
-                query: { speaker: speakerId, text: task.text }
+                query: {speaker: speakerId, text: task.text}
             }
         })
         if (queryError || !audioQuery) {
@@ -38,11 +36,12 @@ export class VoicevoxClient implements SpeechEngine {
         }
 
         // Generate audio
-        const { data: voice, error: generateError } = await client.POST("/synthesis", {
+        const {data: voice, error: generateError} = await client.POST("/synthesis", {
             params: {
-                query: { speaker: speakerId }
+                query: {speaker: speakerId}
             },
-            body: audioQuery
+            body: audioQuery,
+            parseAs: "blob"
         })
         if (generateError || !voice) {
             throw new Error('Failed to generate audio');

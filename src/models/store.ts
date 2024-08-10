@@ -18,6 +18,17 @@ type Store = {
 }
 export const store: Store = {
     voicevox: "http://localhost:50021",
-    chara: {},
+    chara: {
+        akane: {
+            buf: 1,
+            engine: {
+                type: "voicevox",
+                url: "http://localhost:8080",
+                preset: "",
+                speaker: "ずんだもん",
+                style: "ノーマル"
+            }
+        }
+    },
     layers: ['message0']
 }

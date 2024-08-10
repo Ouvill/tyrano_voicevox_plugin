@@ -8,9 +8,10 @@ export class SoundPlayer {
         this.playing = false;
     }
 
-    private async getAudioDuration(audioFile: string): Promise<number> {
+    private async getAudioDuration(audioFile: Blob): Promise<number> {
         return new Promise((resolve, reject) => {
             const audio = new Audio();
+            const url = URL.createObjectURL(audioFile)
 
             const loadedMetadataHandler = () => {
                 const duration = audio.duration;
@@ -26,13 +27,14 @@ export class SoundPlayer {
             const cleanup = () => {
                 audio.removeEventListener('loadedmetadata', loadedMetadataHandler);
                 audio.removeEventListener('error', errorHandler);
+                URL.revokeObjectURL(url)
                 audio.src = '';
             };
 
             audio.addEventListener('loadedmetadata', loadedMetadataHandler);
             audio.addEventListener('error', errorHandler);
 
-            audio.src = audioFile;
+            audio.src = url;
         });
     }
 
@@ -55,15 +57,17 @@ export class SoundPlayer {
         return {promise, cancel};
     }
 
-    async play(file: string): Promise<void> {
+    async play(file: Blob): Promise<void> {
         if (this.playing) {
-            await this.cancel();
+            this.cancel();
         }
 
         const duration = await this.getAudioDuration(file);
+        const url = URL.createObjectURL(file)
+
         const se_pm = {
             loop: "false",
-            storage: file,
+            storage: url,
             buf: this.buf,
         };
 

@@ -18,10 +18,13 @@ function init() {
     const eventBus = EventBus.getInstance<AppEventMap>()
     TYRANO.kag.on("tag-text-message", (e) => {
         const message = e.target.val;
-        const chara_id = TYRANO.kag.chara.getCharaName(true)
+        const chara_name = TYRANO.kag.chara.getCharaName(true)
+        const chara_id = TYRANO.kag.stat.jcharas[chara_name] || ""
+
         const layer = TYRANO.kag.stat.current_layer
 
         // ログ結合が有効ならqueue、無効ならimmediate
+
         const priority: Priority = TYRANO.kag.stat.log_join ? "queue" : "immediate"
 
         eventBus.emit("message", {
