@@ -13,8 +13,14 @@ interface AppEventMap extends StrictEventMap {
 
 const taskManager = new SpeechTaskManager()
 
+/**
+ * Initializes the application by setting up event listeners and registering callbacks.
+ *
+ * @return {void}
+ */
 function init() {
     const eventBus = EventBus.getInstance<AppEventMap>()
+    // メッセージウィンドウが更新されたら発火
     TYRANO.kag.on("tag-text-message", (e) => {
         const message = e.target.val;
         const chara_name = TYRANO.kag.chara.getCharaName(true)
@@ -29,12 +35,16 @@ function init() {
         })
     })
 
+    // [l]タグでクリック待ちが発生する。クリックイベントが発生したのち、nextorderが実行される。
+    // メッセージが更新されると予想されるので、音声再生を停止
     TYRANO.kag.on("tag-l", () => {
         TYRANO.kag.once("nextorder", () => {
             taskManager.cancelAllTask()
         })
     })
 
+    // [p]タグでクリック待ちが発生する。クリックイベントが発生したのち、nextorderが実行される。
+    // メッセージが更新されると予想されるので、音声再生を停止
     TYRANO.kag.on("tag-p", () => {
         TYRANO.kag.once("nextorder", () => {
             taskManager.cancelAllTask()
