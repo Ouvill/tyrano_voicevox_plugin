@@ -53,7 +53,6 @@ export class SoundPlayer {
     }
 
     private cleanup(): void {
-        console.log("clean up")
         if (this.currentUrl) {
             URL.revokeObjectURL(this.currentUrl)
             this.currentUrl = null;
