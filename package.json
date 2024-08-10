@@ -11,6 +11,7 @@
   "devDependencies": {
     "@types/jquery": "^3.5.30",
     "openapi-typescript": "^7.3.0",
+    "prettier": "3.3.3",
     "typescript": "^5.5.4",
     "vite": "^5.4.0"
   },
