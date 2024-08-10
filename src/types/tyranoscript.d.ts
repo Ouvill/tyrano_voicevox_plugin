@@ -243,67 +243,129 @@ declare namespace tyrano {
                 chara: Chara;
 
                 init(): void;
+
                 checkUpdate(call_back: () => void): void;
+
                 applyPatch(patch_path: string, flag_reload: string, call_back: () => void): void;
+
                 evalScript(str: string): void;
+
                 embScript(str: string, preexp: any): any;
+
                 removeSaveData(): void;
+
                 saveSystemVariable(): void;
+
                 clearVariable(): void;
+
                 clearTmpVariable(): void;
+
                 pushStack(name: string, flag: any): void;
+
                 popStack(name: string): any;
+
                 getStack(name: string): any;
+
                 setStack(name: string, flag: any): void;
+
                 endStorage(): boolean;
+
                 setCacheScenario(filename: string, str: string): void;
+
                 getMessageInnerLayer(): JQuery;
+
                 getMessageOuterLayer(): JQuery;
+
                 getMessageCurrentSpan(): JQuery;
+
                 setMessageCurrentSpan(): JQuery;
+
                 setNewParagraph(j_inner: JQuery): void;
+
                 checkMessage(jtext: JQuery): void;
+
                 appendMessage(jtext: JQuery, str: string): void;
+
                 preload(src: string, callbk: (elm: any) => void, options?: Record<string, any>): void;
+
                 preloadAll(storage: string | string[], callbk: () => void): void;
+
                 preloadNextVoice(): void;
+
                 setStyles(j_obj: JQuery, array_style: Record<string, any>): JQuery;
+
                 html(html_file_name: string, data: Record<string, any>, callback: (html: JQuery) => void): void;
+
                 error(message: string, replace_map: Record<string, any>): void;
+
                 warning(message: string, replace_map: Record<string, any>, is_alert?: boolean): void;
+
                 log(obj: any): void;
+
                 setAuto(bool: boolean): void;
+
                 setSkip(bool: boolean, options?: Record<string, any>): void;
+
                 weaklyStop(): void;
+
                 cancelWeakStop(): void;
+
                 stronglyStop(): void;
+
                 cancelStrongStop(): void;
+
                 waitClick(name: string): void;
+
                 logTrigger(event_name: string, event_obj: Record<string, any>): void;
+
                 enableEventLogging(): void;
+
                 logEventLisnenerCount(): void;
+
                 trigger(event_name: string, event_obj?: Record<string, any>): void;
+
                 on(event_names: string, callback: (event_obj: Record<string, any>) => void, options?: Record<string, any>): void;
+
                 once(event_names: string, callback: (event_obj: Record<string, any>) => void, options?: Record<string, any>): void;
+
                 overwrite(event_names: string, callback: (event_obj: Record<string, any>) => void, options?: Record<string, any>): void;
+
                 sortEventLisneners(evnet_name: string): void;
+
                 off(event_names: string, options?: Record<string, any>): void;
+
                 offTempListeners(): void;
+
                 getTag(tag_name?: string): any;
+
                 parseKeyframesForWebAnimationAPI(name: string): any[] | null;
+
                 getHiddenArea(): JQuery;
+
                 changeHowlVolume(audio_obj: any, options?: Record<string, any>): void;
+
                 playSound(storage: string, buf: string): void;
+
                 makeFocusable(j_elm: JQuery, tabindex?: number | string): void;
+
                 makeUnfocusable(j_elm: JQuery): void;
+
                 makeUnfocusableAll(j_elm: JQuery): void;
+
                 unfocus(): void;
+
                 restoreFocusable(): void;
+
                 showModeEffect(_type: "skip" | "stop" | "auto", options?: Record<string, any>): void;
+
                 showLoadingLog(type?: "preload" | "save"): void;
+
                 hideLoadingLog(): void;
+
                 convertLang(scenario: string, array_s: any[]): any[];
+
                 loadLang(name: string, cb: () => void): Promise<void>;
+
                 test(): void;
             }
         }
@@ -315,50 +377,83 @@ declare namespace tyrano {
         current_order_index: number;
 
         init(): void;
+
         buildTag(array_tag: any[]): void;
+
         startTag(key: string, pm: Record<string, any>): void;
+
         nextOrder(): void;
+
         pushTag(tag: any): void;
+
         getCurrentTag(): any;
+
         jumpTag(index: number): void;
+
         processStart(): void;
+
         cutTag(start: number, end: number): void;
+
         startSync(array_tag: any[], index: number): void;
+
         objectConvert(tag_obj: any, line: number): any;
+
         convertEntity(str: string): string;
+
         checkCond(str: string): boolean;
+
         checkVital(tag: Tag): boolean;
+
         getTagObject(tag_name: string): Tag;
+
         setMenuEvent(j_obj: JQuery, caller: any): void;
     }
 
     interface Tag {
         vital: string[];
         pm: Record<string, any>;
+
         start(pm: Record<string, any>): void;
     }
 
     interface Chara {
         kag: KAG;
+
         init(): void;
+
         getCharaNameArea(): JQuery;
+
         getCharaName(convert_to_id?: boolean): string;
+
         setNotSpeakerStyle(j_chara: JQuery): void;
+
         setSpeakerStyle(j_chara: JQuery): void;
+
         isPlusLighterEnabled(): boolean;
+
         getCharaContainer(chara_name?: string, j_layer?: JQuery): JQuery;
+
         setPartContainer(j_chara: JQuery): void;
+
         wrapPartContainer(j_img: Element | JQuery): void;
+
         getLipSyncParts(name: string, type?: "voice" | "text"): Array<{
             j_frames: JQuery;
             thresholds: number[];
         }> | null;
+
         getFrameAnimationSrcs(cpm: CharaDefinition, part: string, state: string): string[];
+
         setFrameAnimation(cpm: CharaDefinition, part: string, state: string, j_frame_base: JQuery, preload_srcs: string[]): JQuery | null;
+
         startFrameAnimation(state_obj: PartStateDefinition, j_frames: JQuery): void;
+
         stopFrameAnimation(cpm: CharaDefinition): void;
+
         stopAllFrameAnimation(): void;
+
         restoreAllFrameAnimation(): void;
+
         updateLipSyncWithVoice(value: number, target_parts: Array<{
             j_frames: JQuery;
             thresholds: number[];
@@ -368,7 +463,13 @@ declare namespace tyrano {
 }
 declare global {
     const TYRANO: tyrano.plugin.kag.KAG;
-    interface Window { TYRANO: typeof TYRANO; }
+
+    interface Window {
+        TYRANO: typeof TYRANO;
+        tyrano?: {
+            plugin?: Record<string, unknown>
+        }
+    }
 }
 
-export { };
+export {};
