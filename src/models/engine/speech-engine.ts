@@ -1,6 +1,6 @@
 import { SpeechTask } from '../speech-task'
 
 export interface SpeechEngine {
-    speak(task: SpeechTask): Promise<void>
+    generate(task: SpeechTask): Promise<string>
     cancel(): void
 }

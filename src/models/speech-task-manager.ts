@@ -1,19 +1,20 @@
-import { SpeechEngine } from "./engine/speech-engine";
-import { VoiceVoxEngine } from "./engine/voicevox-engine";
-import { SpeechTask } from "./speech-task";
+import {SpeechEngine} from "./engine/speech-engine";
+import {VoicevoxClient} from "./engine/voicevox-client.ts";
+import {SpeechTask} from "./speech-task";
+import {SoundPlayer} from "./sound-player.ts";
 
-type EngineType = 'voicevox' | 'google' | 'aws'
+// 今後増やす
+type EngineType = 'voicevox'
 
 export type Priority = 'queue' | 'immediate'
 
 class EngineManager {
-    private engines: Map<string, SpeechEngine> = new Map()
-
     getEngine(type: EngineType): SpeechEngine {
-        if (!this.engines.has(type)) {
-            this.engines.set(type, new VoiceVoxEngine())
+        if (type == 'voicevox') {
+            return new VoicevoxClient()
+        } else {
+            throw new Error("Not compatible")
         }
-        return this.engines.get(type)!
     }
 }
 
@@ -21,9 +22,10 @@ export class SpeechTaskManager {
     private queue: SpeechTask[] = [];
     private isProcessing = false;
     private currentEngine: SpeechEngine | null = null;
+    private currentPlayer: SoundPlayer | null = null;
     private engineManager = new EngineManager()
 
-    euqueue(task: SpeechTask) {
+    enqueue(task: SpeechTask) {
         if (task.priority === 'immediate') {
             this.queue = []
             this.cancelCurrentTask()
@@ -42,11 +44,16 @@ export class SpeechTaskManager {
 
         while (this.queue.length > 0) {
             const task = this.queue.shift()!
-
             const engine = this.engineManager.getEngine(task.engineInfo.type)
             this.currentEngine = engine
-            await engine.speak(task)
+            const voice_file = await engine.generate(task)
             this.currentEngine = null
+
+
+            const player = new SoundPlayer(task.buf)
+            this.currentPlayer = player;
+            await player.play(voice_file)
+            this.currentPlayer = null
         }
 
         this.isProcessing = false
@@ -56,6 +63,11 @@ export class SpeechTaskManager {
         if (this.currentEngine) {
             this.currentEngine.cancel()
             this.currentEngine = null
+        }
+
+        if (this.currentPlayer) {
+            this.currentPlayer.cancel()
+            this.currentPlayer = null
         }
     }
 }

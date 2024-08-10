@@ -41,8 +41,9 @@ function init() {
             return
         }
 
-        taskManager.euqueue({
+        taskManager.enqueue({
             text: message,
+            buf: speaker.buf,
             priority,
             engineInfo: {
                 type: "voicevox",

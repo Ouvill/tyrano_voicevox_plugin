@@ -3,8 +3,7 @@ import { SpeechTask } from '../speech-task';
 import createClient from 'openapi-fetch';
 import { paths } from '../../types/voicevox-api';
 
-export class VoiceVoxEngine implements SpeechEngine {
-
+export class VoicevoxClient implements SpeechEngine {
     private async getSpeakerId(speakerName: string, styleName: string): Promise<number> {
         const client = createClient<paths>({ baseUrl: 'https://api.neospeech.com' });
         const { data, error } = await client.GET('/speakers');
@@ -23,7 +22,7 @@ export class VoiceVoxEngine implements SpeechEngine {
         return style.id;
     }
 
-    async speak(task: SpeechTask): Promise<void> {
+    async generate(task: SpeechTask) {
         const client = createClient<paths>({ baseUrl: task.engineInfo.url });
 
         const speakerId = await this.getSpeakerId(task.engineInfo.speaker, task.engineInfo.style);
@@ -49,12 +48,9 @@ export class VoiceVoxEngine implements SpeechEngine {
             throw new Error('Failed to generate audio');
         }
 
-
-        // Play audio
-        // todo
-
-
+        return voice
     }
+
     cancel() {
         // cancel
     }
