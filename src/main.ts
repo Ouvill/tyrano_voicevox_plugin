@@ -1,6 +1,6 @@
-import { EventBus, StrictEventMap } from "./event-bus";
-import { Priority, SpeechTaskManager } from "./task-manager";
-import { VoiceVoxInfo } from "./models/speech-task";
+import {EventBus, StrictEventMap} from "./models/event-bus";
+import {Priority, SpeechTaskManager} from "./models/speech-task-manager.ts";
+import {store} from "./models/store.ts";
 
 interface AppEventMap extends StrictEventMap {
     message: {
@@ -11,21 +11,6 @@ interface AppEventMap extends StrictEventMap {
     };
 }
 
-type SpeakerInfo = VoiceVoxInfo
-
-type Store = {
-    voicevox: string,
-    chara: {
-        [key: string]: SpeakerInfo
-    },
-    layers: string[]
-}
-
-const store: Store = {
-    voicevox: "http://localhost:50021",
-    chara: {},
-    layers: ['message0']
-}
 
 const taskManager = new SpeechTaskManager()
 
@@ -44,11 +29,10 @@ function init() {
             chara_id,
             layer,
             priority
-
         })
     })
 
-    eventBus.on("message", ({ chara_id, layer, message, priority }) => {
+    eventBus.on("message", ({chara_id, layer, message, priority}) => {
         const speaker = store.chara[chara_id]
         if (!speaker) {
             return
@@ -63,9 +47,9 @@ function init() {
             engineInfo: {
                 type: "voicevox",
                 url: store.voicevox,
-                speaker: speaker.speaker,
-                style: speaker.style,
-                preset: speaker.preset
+                speaker: speaker.engine.speaker,
+                style: speaker.engine.style,
+                preset: speaker.engine.preset
             }
         })
     })

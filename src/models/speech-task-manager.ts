@@ -1,6 +1,6 @@
-import { SpeechEngine } from "./models/engine/speech-engine";
-import { VoiceVoxEngine } from "./models/engine/voicevox-engine";
-import { SpeechTask } from "./models/speech-task";
+import { SpeechEngine } from "./engine/speech-engine";
+import { VoiceVoxEngine } from "./engine/voicevox-engine";
+import { SpeechTask } from "./speech-task";
 
 type EngineType = 'voicevox' | 'google' | 'aws'
 
