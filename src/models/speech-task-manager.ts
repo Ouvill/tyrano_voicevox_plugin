@@ -50,9 +50,11 @@ export class SpeechTaskManager {
             this.currentEngine = null
 
 
-            const player = new SoundPlayer(task.buf)
+            const player = new SoundPlayer()
             this.currentPlayer = player;
-            await player.play(voice_file)
+            await player.play(voice_file).catch(e => {
+                console.log(e.message)
+            })
             this.currentPlayer = null
         }
 

@@ -1,104 +1,66 @@
 export class SoundPlayer {
-    private readonly buf: number;
-    private playing: boolean;
-    private cancelCurrentPlay: (() => void) | null = null;
+    private readonly audio: HTMLAudioElement | null = null;
+    private playPromise: Promise<void> | null = null;
+    private resolvePlay: (() => void) | null = null;
+    private rejectPlay: ((reason?: any) => void) | null = null;
+    private currentUrl: string | null = null;
 
-    constructor(buf: number) {
-        this.buf = buf;
-        this.playing = false;
+    constructor() {
+        this.audio = new Audio()
     }
 
-    private async getAudioDuration(audioFile: Blob): Promise<number> {
-        return new Promise((resolve, reject) => {
-            const audio = new Audio();
-            const url = URL.createObjectURL(audioFile)
+    async play(blob: Blob): Promise<void> {
+        this.playPromise = new Promise((resolve, reject) => {
+            this.resolvePlay = resolve;
+            this.rejectPlay = reject;
 
-            const loadedMetadataHandler = () => {
-                const duration = audio.duration;
-                cleanup();
-                resolve(duration);
-            };
+            if (this.audio == null) {
+                this.rejectPlay(new Error("Audio element not initialized"))
+                return;
+            }
 
-            const errorHandler = (error: ErrorEvent) => {
-                cleanup();
-                reject(new Error(`Failed to load audio file: ${error.message}`));
-            };
+            this.currentUrl = URL.createObjectURL(blob)
+            this.audio.src = this.currentUrl;
 
-            const cleanup = () => {
-                audio.removeEventListener('loadedmetadata', loadedMetadataHandler);
-                audio.removeEventListener('error', errorHandler);
-                URL.revokeObjectURL(url)
-                audio.src = '';
-            };
+            this.audio.onended = () => {
+                this.resolvePlay!();
+                this.cleanup()
+            }
 
-            audio.addEventListener('loadedmetadata', loadedMetadataHandler);
-            audio.addEventListener('error', errorHandler);
+            this.audio.onerror = () => {
+                this.rejectPlay!(new Error("Error playing audio"))
+                this.cleanup()
+            }
 
-            audio.src = url;
-        });
-    }
+            this.audio.play().catch((error) => {
+                this.rejectPlay!(error)
+                this.cleanup();
+            })
+        })
 
-    private createCancellableTimeout(ms: number): { promise: Promise<void>; cancel: () => void } {
-        let timeoutId: number;
-        let resolve: () => void;
-        let reject: (reason?: any) => void;
-
-        const promise = new Promise<void>((res, rej) => {
-            resolve = res;
-            reject = rej;
-            timeoutId = window.setTimeout(resolve, ms);
-        });
-
-        const cancel = () => {
-            clearTimeout(timeoutId);
-            reject(new Error('Timeout cancelled'));
-        };
-
-        return {promise, cancel};
-    }
-
-    async play(file: Blob): Promise<void> {
-        if (this.playing) {
-            this.cancel();
-        }
-
-        const duration = await this.getAudioDuration(file);
-        const url = URL.createObjectURL(file)
-
-        const se_pm = {
-            loop: "false",
-            storage: url,
-            buf: this.buf,
-        };
-
-        this.playing = true;
-        TYRANO.kag.ftag.startTag("playse", se_pm);
-
-        const {promise, cancel} = this.createCancellableTimeout(duration * 1000);
-        this.cancelCurrentPlay = cancel;
-
-        try {
-            await promise;
-        } finally {
-            this.playing = false;
-            this.cancelCurrentPlay = null;
-        }
+        return this.playPromise
     }
 
     cancel() {
-        if (this.playing) {
-            const pm = {
-                buf: this.buf
-            };
-
-            TYRANO.kag.ftag.startTag("stopse", pm);
-
-            if (this.cancelCurrentPlay) {
-                this.cancelCurrentPlay();
-            }
-
-            this.playing = false;
-            this.cancelCurrentPlay = null;
+        if (this.audio) {
+            this.audio.pause();
+            this.audio.currentTime = 0;
         }
+        if (this.rejectPlay) {
+            this.rejectPlay(new Error("Playback cancelled"))
+        }
+        this.cleanup()
+    }
+
+    private cleanup(): void {
+        console.log("clean up")
+        if (this.currentUrl) {
+            URL.revokeObjectURL(this.currentUrl)
+            this.currentUrl = null;
+        }
+
+        this.playPromise = null
+        this.resolvePlay = null
+        this.rejectPlay = null
     }
 }
