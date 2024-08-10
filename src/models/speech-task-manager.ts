@@ -1,72 +1,71 @@
-import {SpeechEngine} from "./engine/speech-engine";
-import {VoicevoxClient} from "./engine/voicevox-client.ts";
-import {SpeechTask} from "./speech-task";
-import {SoundPlayer} from "./sound-player.ts";
+import { SpeechEngine } from "./engine/speech-engine";
+import { VoicevoxClient } from "./engine/voicevox-client.ts";
+import { SpeechTask } from "./speech-task";
+import { SoundPlayer } from "./sound-player.ts";
 
 // 今後増やす
-type EngineType = 'voicevox'
+type EngineType = "voicevox";
 
 class EngineManager {
-    getEngine(type: EngineType): SpeechEngine {
-        if (type == 'voicevox') {
-            return new VoicevoxClient()
-        } else {
-            throw new Error("Not compatible")
-        }
+  getEngine(type: EngineType): SpeechEngine {
+    if (type == "voicevox") {
+      return new VoicevoxClient();
+    } else {
+      throw new Error("Not compatible");
     }
+  }
 }
 
 export class SpeechTaskManager {
-    private queue: SpeechTask[] = [];
-    private isProcessing = false;
-    private currentEngine: SpeechEngine | null = null;
-    private currentPlayer: SoundPlayer | null = null;
-    private engineManager = new EngineManager()
+  private queue: SpeechTask[] = [];
+  private isProcessing = false;
+  private currentEngine: SpeechEngine | null = null;
+  private currentPlayer: SoundPlayer | null = null;
+  private engineManager = new EngineManager();
 
-    enqueue(task: SpeechTask) {
-        this.queue.push(task)
-        this.processQueue()
+  enqueue(task: SpeechTask) {
+    this.queue.push(task);
+    this.processQueue();
+  }
+
+  private async processQueue() {
+    if (this.isProcessing) {
+      return;
+    }
+    this.isProcessing = true;
+
+    while (this.queue.length > 0) {
+      const task = this.queue.shift()!;
+      const engine = this.engineManager.getEngine(task.engineInfo.type);
+      this.currentEngine = engine;
+      const voice_file = await engine.generate(task);
+      this.currentEngine = null;
+
+      const player = new SoundPlayer();
+      this.currentPlayer = player;
+      await player.play(voice_file).catch((e) => {
+        console.log(e.message);
+      });
+      this.currentPlayer = null;
     }
 
-    private async processQueue() {
-        if (this.isProcessing) {
-            return
-        }
-        this.isProcessing = true
+    this.isProcessing = false;
+  }
 
-        while (this.queue.length > 0) {
-            const task = this.queue.shift()!
-            const engine = this.engineManager.getEngine(task.engineInfo.type)
-            this.currentEngine = engine
-            const voice_file = await engine.generate(task)
-            this.currentEngine = null
+  cancelAllTask() {
+    this.queue = [];
+    this.cancelCurrentTask();
+  }
 
-
-            const player = new SoundPlayer()
-            this.currentPlayer = player;
-            await player.play(voice_file).catch(e => {
-                console.log(e.message)
-            })
-            this.currentPlayer = null
-        }
-
-        this.isProcessing = false
+  cancelCurrentTask() {
+    if (this.currentEngine) {
+      this.currentEngine.cancel();
+      this.currentEngine = null;
     }
 
-    cancelAllTask() {
-        this.queue = []
-        this.cancelCurrentTask()
+    if (this.currentPlayer) {
+      this.currentPlayer.cancel();
+      this.currentPlayer = null;
     }
-
-    cancelCurrentTask() {
-        if (this.currentEngine) {
-            this.currentEngine.cancel()
-            this.currentEngine = null
-        }
-
-        if (this.currentPlayer) {
-            this.currentPlayer.cancel()
-            this.currentPlayer = null
-        }
-    }
+  }
 }
