@@ -9,6 +9,5 @@ export interface VoiceVoxInfo {
 export interface SpeechTask {
     text: string,
     buf: number
-    priority: 'queue' | 'immediate'
     engineInfo: VoiceVoxInfo
 }

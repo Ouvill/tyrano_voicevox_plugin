@@ -25,7 +25,7 @@ export const store: Store = {
                 type: "voicevox",
                 url: "http://localhost:8080",
                 preset: "",
-                speaker: "ずんだもん",
+                speaker: "春日部つむぎ",
                 style: "ノーマル"
             }
         }

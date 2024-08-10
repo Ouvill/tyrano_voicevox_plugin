@@ -1,5 +1,5 @@
 import {EventBus, StrictEventMap} from "./models/event-bus";
-import {Priority, SpeechTaskManager} from "./models/speech-task-manager.ts";
+import {SpeechTaskManager} from "./models/speech-task-manager.ts";
 import {store} from "./models/store.ts";
 
 interface AppEventMap extends StrictEventMap {
@@ -7,7 +7,6 @@ interface AppEventMap extends StrictEventMap {
         chara_id: string;
         message: string;
         layer: string;
-        priority: Priority;
     };
 }
 
@@ -23,19 +22,26 @@ function init() {
 
         const layer = TYRANO.kag.stat.current_layer
 
-        // ログ結合が有効ならqueue、無効ならimmediate
-
-        const priority: Priority = TYRANO.kag.stat.log_join ? "queue" : "immediate"
-
         eventBus.emit("message", {
             message,
             chara_id,
             layer,
-            priority
         })
     })
 
-    eventBus.on("message", ({chara_id, layer, message, priority}) => {
+    TYRANO.kag.on("tag-l", () => {
+        TYRANO.kag.once("nextorder", () => {
+            taskManager.cancelAllTask()
+        })
+    })
+
+    TYRANO.kag.on("tag-p", () => {
+        TYRANO.kag.once("nextorder", () => {
+            taskManager.cancelAllTask()
+        })
+    })
+
+    eventBus.on("message", ({chara_id, layer, message}) => {
         const speaker = store.chara[chara_id]
         if (!speaker) {
             return
@@ -47,7 +53,6 @@ function init() {
         taskManager.enqueue({
             text: message,
             buf: speaker.buf,
-            priority,
             engineInfo: {
                 type: "voicevox",
                 url: store.voicevox,
@@ -59,4 +64,5 @@ function init() {
     })
 }
 
+TYRANO.kag.enableEventLogging()
 init()

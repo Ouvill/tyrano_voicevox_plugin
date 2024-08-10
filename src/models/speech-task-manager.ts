@@ -6,8 +6,6 @@ import {SoundPlayer} from "./sound-player.ts";
 // 今後増やす
 type EngineType = 'voicevox'
 
-export type Priority = 'queue' | 'immediate'
-
 class EngineManager {
     getEngine(type: EngineType): SpeechEngine {
         if (type == 'voicevox') {
@@ -26,13 +24,7 @@ export class SpeechTaskManager {
     private engineManager = new EngineManager()
 
     enqueue(task: SpeechTask) {
-        if (task.priority === 'immediate') {
-            this.queue = []
-            this.cancelCurrentTask()
-            this.queue.push(task)
-        } else {
-            this.queue.push(task)
-        }
+        this.queue.push(task)
         this.processQueue()
     }
 
@@ -59,6 +51,11 @@ export class SpeechTaskManager {
         }
 
         this.isProcessing = false
+    }
+
+    cancelAllTask() {
+        this.queue = []
+        this.cancelCurrentTask()
     }
 
     cancelCurrentTask() {
