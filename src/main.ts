@@ -1,6 +1,7 @@
 import { EventBus, StrictEventMap } from "./models/event-bus";
 import { SpeechTaskManager } from "./models/speech-task-manager.ts";
 import { store } from "./models/store.ts";
+import "./patch.ts"
 
 const PLUGIN_NAME = "TYRANO_VOICEVOX_PLUGIN";
 
