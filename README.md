@@ -60,7 +60,11 @@ releaseページからファイルをダウンロード。
 ```TyranoScript
 [chara_new name="akane" storage="chara/akane/normal.png" jname="あかね"]
 
+; ローカルで動いているvoicevoxを指定する場合
 [voicevox_chara name="akane" speaker="春日部つむぎ" style="ノーマル"]
+
+; リモートで動いているvoicevox(実行サーバ example.com ポート 50021)を指定する場合
+[voicevox_chara name="akane" speaker="春日部つむぎ" style="ノーマル" host="example.com" port="50021"]
 ```
 
 ### [voicevox_auto] 自動再生をonにする。

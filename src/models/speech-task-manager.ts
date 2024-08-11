@@ -2,6 +2,7 @@ import { SpeechEngine } from "./engine/speech-engine";
 import { VoicevoxClient } from "./engine/voicevox-client.ts";
 import { SpeechTask } from "./speech-task";
 import { SoundPlayer } from "./sound-player.ts";
+import { TyranoSoundPlayer } from "./tyrano-sound-player.ts";
 
 // 今後増やす
 type EngineType = "voicevox";
@@ -20,7 +21,7 @@ export class SpeechTaskManager {
   private queue: SpeechTask[] = [];
   private isProcessing = false;
   private currentEngine: SpeechEngine | null = null;
-  private currentPlayer: SoundPlayer | null = null;
+  private currentPlayer: SoundPlayer | TyranoSoundPlayer | null = null;
   private engineManager = new EngineManager();
 
   enqueue(task: SpeechTask) {
@@ -41,11 +42,13 @@ export class SpeechTaskManager {
       const voice_file = await engine.generate(task);
       this.currentEngine = null;
 
-      const player = new SoundPlayer();
-      this.currentPlayer = player;
-      await player.play(voice_file).catch((e) => {
-        console.log(e.message);
-      });
+      // const player = new SoundPlayer();
+      const tyranoPlayer = new TyranoSoundPlayer();
+      this.currentPlayer = tyranoPlayer;
+      // await player.play(voice_file).catch((e) => {
+      //   console.log(e.message);
+      // });
+      await tyranoPlayer.play(voice_file);
       this.currentPlayer = null;
     }
 
