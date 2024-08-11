@@ -1,7 +1,7 @@
 import { EventBus, StrictEventMap } from "./models/event-bus";
 import { SpeechTaskManager } from "./models/speech-task-manager.ts";
 import { store } from "./models/store.ts";
-import "./patch.ts"
+import "./patch.ts";
 
 const PLUGIN_NAME = "TYRANO_VOICEVOX_PLUGIN";
 
@@ -62,6 +62,10 @@ function init(): void {
   });
 
   eventBus.on("message", ({ chara_id, layer, message }) => {
+    if (!store.isTextToSpeechEnabled) {
+      return;
+    }
+
     const speaker = store.chara[chara_id];
     if (!speaker) {
       return;

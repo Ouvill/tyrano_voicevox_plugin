@@ -2,7 +2,7 @@ export interface VoiceVoxInfo {
   type: "voicevox";
   speaker: string;
   style: string;
-  preset: string;
+  preset?: string;
 }
 
 export interface SpeechTask {

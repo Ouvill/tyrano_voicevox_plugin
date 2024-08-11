@@ -11,7 +11,7 @@ type EngineType = "voicevox";
 class EngineManager {
   getEngine(type: EngineType): SpeechEngine {
     if (type == "voicevox") {
-      return new VoicevoxClient(store.voicevox);
+      return new VoicevoxClient(store.voicevox_url);
     } else {
       throw new Error("Not compatible");
     }
