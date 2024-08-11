@@ -1,4 +1,12 @@
 export class TyranoSoundPlayer {
+  private cancelCallback: (() => void) | null = null;
+  private readonly buf: number;
+  private isPlaying: boolean = false;
+
+  constructor(buf: number) {
+    this.buf = buf;
+  }
+
   wavBlobToDataUrl(blob: Blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -18,18 +26,29 @@ export class TyranoSoundPlayer {
     const dataUrl = await this.wavBlobToDataUrl(blob);
 
     return new Promise<void>((resolve) => {
-      const buf = 1;
+      const buf = this.buf;
+      this.isPlaying = true;
+
+      this.cancelCallback = () => {
+        resolve();
+      };
+
       TYRANO.kag.ftag.startTag("playse", {
         storage: dataUrl,
         buf: buf,
         stop: true,
       });
       TYRANO.kag.tmp.map_se[buf].once("end", () => {
-        console.log("kag status:", TYRANO.kag.tmp);
+        this.isPlaying = false;
         resolve();
       });
     });
   }
 
-  cancel() {}
+  cancel() {
+    if (this.isPlaying && this.cancelCallback != null) {
+      TYRANO.kag.ftag.startTag("stopse", { buf: this.buf, stop: true });
+      this.cancelCallback();
+    }
+  }
 }

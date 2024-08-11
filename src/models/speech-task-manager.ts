@@ -43,7 +43,7 @@ export class SpeechTaskManager {
       this.currentEngine = null;
 
       // const player = new SoundPlayer();
-      const tyranoPlayer = new TyranoSoundPlayer();
+      const tyranoPlayer = new TyranoSoundPlayer(1);
       this.currentPlayer = tyranoPlayer;
       // await player.play(voice_file).catch((e) => {
       //   console.log(e.message);
