@@ -23,12 +23,21 @@ export const store: Store = {
       buf: 1,
       engine: {
         type: "voicevox",
-        url: "http://localhost:8080",
         preset: "",
         speaker: "春日部つむぎ",
         style: "ノーマル",
       },
     },
+    zunda: {
+      buf: 2,
+      engine: {
+        type: "voicevox",
+        preset: "",
+        speaker: "ずんだもん",
+        style: "ノーマル",
+      },
+    },
   },
+
   layers: ["message0"],
 };

@@ -3,6 +3,7 @@ import { VoicevoxClient } from "./engine/voicevox-client.ts";
 import { SpeechTask } from "./speech-task";
 import { SoundPlayer } from "./sound-player.ts";
 import { TyranoSoundPlayer } from "./tyrano-sound-player.ts";
+import { store } from "./store.ts";
 
 // 今後増やす
 type EngineType = "voicevox";
@@ -10,7 +11,7 @@ type EngineType = "voicevox";
 class EngineManager {
   getEngine(type: EngineType): SpeechEngine {
     if (type == "voicevox") {
-      return new VoicevoxClient();
+      return new VoicevoxClient(store.voicevox);
     } else {
       throw new Error("Not compatible");
     }

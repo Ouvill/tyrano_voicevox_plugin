@@ -75,7 +75,6 @@ function init(): void {
       buf: speaker.buf,
       engineInfo: {
         type: "voicevox",
-        url: store.voicevox,
         speaker: speaker.engine.speaker,
         style: speaker.engine.style,
         preset: speaker.engine.preset,

@@ -4,6 +4,12 @@ import createClient from "openapi-fetch";
 import { paths } from "../../types/voicevox-api";
 
 export class VoicevoxClient implements SpeechEngine {
+  private baseUrl: string;
+
+  constructor(url: string) {
+    this.baseUrl = url;
+  }
+
   private async getSpeakerId(
     speakerName: string,
     styleName: string,
@@ -26,12 +32,12 @@ export class VoicevoxClient implements SpeechEngine {
   }
 
   async generate(task: SpeechTask) {
-    const client = createClient<paths>({ baseUrl: task.engineInfo.url });
+    const client = createClient<paths>({ baseUrl: this.baseUrl });
 
     const speakerId = await this.getSpeakerId(
       task.engineInfo.speaker,
       task.engineInfo.style,
-      task.engineInfo.url,
+      this.baseUrl,
     );
 
     // Generate audio query
