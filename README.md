@@ -15,6 +15,36 @@ releaseページからファイルをダウンロード。
 [plugin name="tyrano_voicevox_plugin"]
 ```
 
+## Quick Tutorial
+
+```TyranoScript
+; voicevoxのアプリを登録
+[regist_voicevox url="http://localhost:50021"]
+
+
+; TyranoScriptのキャラを登録
+[chara_new name="akane" storage="chara/akane/normal.png" jname="あかね"]
+
+
+; VOICEVOXの音声登録
+[voicevox_chara name="akane" speaker="春日部つむぎ" style="ノーマル"]
+
+; VOICEVOXの音声読み上げ開始(自動で字幕送り機能は未実装)
+[voicevox_on]
+
+
+; シナリオ記述
+
+# akane
+やあ、こんにちは。[p]
+
+# akane
+VOICEVOXの音声を読み上げるプラグインだよ。[p]
+
+# akane
+
+```
+
 ## 注意事項
 
 個人的に欲しいと思ったので作成しました。
@@ -31,12 +61,20 @@ releaseページからファイルをダウンロード。
 
 ティラノスクリプトのアプリを起動時にVOICEVOXを起動しておく必要があります。
 
-### [voicevox_on] VOICEVOXの読み上げを有効にする
+### VoiceVoxの登録
+
+VoiceVoxのアプリを指定します。VoiceVoxのアプリを起動しているなら
+
+```TyranoScript
+[regist_voicevox url="http://localhost:50021"]
+```
+
+### [voicevox_on] VOICEVOX
 
 キャラクターの音声読み上げを有効にします。
 
 ```TyranoScript
-[voicevox_on url="http://localhost:50021"]
+[voicevox_on]
 ```
 
 ### [voicevox_off] VOICEVOXの読み上げを無効にする
@@ -60,18 +98,5 @@ releaseページからファイルをダウンロード。
 ```TyranoScript
 [chara_new name="akane" storage="chara/akane/normal.png" jname="あかね"]
 
-; ローカルで動いているvoicevoxを指定する場合
 [voicevox_chara name="akane" speaker="春日部つむぎ" style="ノーマル"]
-
-; リモートで動いているvoicevox(実行サーバ example.com ポート 50021)を指定する場合
-[voicevox_chara name="akane" speaker="春日部つむぎ" style="ノーマル" host="example.com" port="50021"]
 ```
-
-### [voicevox_auto] 自動再生をonにする。
-
-音声の読み上げが終了したら次のメッセージを表示させます。
-
-```TyranoScript
-[voicevox_auto]
-```
-
