@@ -66,7 +66,7 @@ VOICEVOXの音声を読み上げるプラグインだよ。[p]
 VoiceVoxのアプリを指定します。VoiceVoxのアプリを起動しているなら
 
 ```TyranoScript
-[regist_voicevox url="http://localhost:50021"]
+[regist_voicevox_app url="http://localhost:50021"]
 ```
 
 ### [voicevox_on] VOICEVOX

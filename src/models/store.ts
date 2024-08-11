@@ -21,15 +21,15 @@ type Store = {
   /** 監視対象のメッセージレイヤ */
   layers: string[];
   /** キャラごとの音声設定 */
-  chara: {
+  charas: {
     [key: string]: SpeakerInfo;
   };
 };
 
 export const store: Store = {
-  isTextToSpeechEnabled: true,
+  isTextToSpeechEnabled: false,
   voicevox_url: "http://localhost:50021",
-  chara: {
+  charas: {
     akane: {
       buf: 1,
       engine: {

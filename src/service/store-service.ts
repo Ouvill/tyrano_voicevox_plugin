@@ -13,10 +13,30 @@ export class StoreService {
     store.layers = layers_str.split(",").map((layer) => layer.trim());
   }
 
-  updateChara(chara: string, info: Partial<SpeakerInfo>) {
-    store.chara[chara] = {
-      ...store.chara[chara],
+  setChara(charaId: string, info: SpeakerInfo) {
+    store.charas[charaId] = info;
+  }
+
+  updateChara(charaId: string, info: DeepPartial<SpeakerInfo>) {
+    const chara = this.getChara(charaId);
+
+    if (chara === undefined) return;
+
+    store.charas[charaId] = {
+      ...chara,
       ...info,
+      engine: {
+        ...chara.engine,
+        ...info.engine,
+      },
     };
+  }
+
+  getChara(chara: string) {
+    if (store.charas[chara]) {
+      return store.charas[chara];
+    } else {
+      return undefined;
+    }
   }
 }

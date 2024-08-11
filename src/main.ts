@@ -2,6 +2,7 @@ import { EventBus, StrictEventMap } from "./models/event-bus";
 import { SpeechTaskManager } from "./models/speech-task-manager.ts";
 import { store } from "./models/store.ts";
 import "./patch.ts";
+import "./presentation/tag.ts";
 
 const PLUGIN_NAME = "TYRANO_VOICEVOX_PLUGIN";
 
@@ -66,7 +67,7 @@ function init(): void {
       return;
     }
 
-    const speaker = store.chara[chara_id];
+    const speaker = store.charas[chara_id];
     if (!speaker) {
       return;
     }

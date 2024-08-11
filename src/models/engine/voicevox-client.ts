@@ -10,11 +10,15 @@ export class VoicevoxClient implements SpeechEngine {
     this.baseUrl = url;
   }
 
-  private async getSpeakerId(
-    speakerName: string,
-    styleName: string,
-    baseUrl: string,
-  ): Promise<number> {
+  private async getSpeakerId({
+    baseUrl,
+    speakerName,
+    styleName,
+  }: {
+    baseUrl: string;
+    speakerName: string;
+    styleName?: string;
+  }): Promise<number> {
     const client = createClient<paths>({ baseUrl });
     const { data, error } = await client.GET("/speakers");
 
@@ -34,11 +38,11 @@ export class VoicevoxClient implements SpeechEngine {
   async generate(task: SpeechTask) {
     const client = createClient<paths>({ baseUrl: this.baseUrl });
 
-    const speakerId = await this.getSpeakerId(
-      task.engineInfo.speaker,
-      task.engineInfo.style,
-      this.baseUrl,
-    );
+    const speakerId = await this.getSpeakerId({
+      baseUrl: this.baseUrl,
+      speakerName: task.engineInfo.speaker,
+      styleName: task.engineInfo.style,
+    });
 
     // Generate audio query
     const { data: audioQuery, error: queryError } = await client.POST(
