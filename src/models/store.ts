@@ -1,4 +1,4 @@
-import { VoiceVoxInfo } from "./speech-task.ts";
+import { EngineInfo } from "./speech-task.ts";
 
 /**
  * キャラのコンフィグ
@@ -7,7 +7,7 @@ export type SpeakerInfo = {
   /** キャラボイスのbusを指定 */
   buf: number;
   /** 音声合成エンジンの指定 */
-  engine: VoiceVoxInfo;
+  engine: EngineInfo;
 };
 
 /**
@@ -29,26 +29,6 @@ type Store = {
 export const store: Store = {
   isTextToSpeechEnabled: false,
   voicevox_url: "http://localhost:50021",
-  charas: {
-    akane: {
-      buf: 1,
-      engine: {
-        type: "voicevox",
-        preset: "",
-        speaker: "春日部つむぎ",
-        style: "ノーマル",
-      },
-    },
-    zunda: {
-      buf: 2,
-      engine: {
-        type: "voicevox",
-        preset: "",
-        speaker: "ずんだもん",
-        style: "ノーマル",
-      },
-    },
-  },
-
+  charas: {},
   layers: ["message0"],
 };

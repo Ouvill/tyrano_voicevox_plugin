@@ -19,7 +19,7 @@ releaseページからファイルをダウンロード。
 
 ```TyranoScript
 ; voicevoxのアプリを登録
-[regist_voicevox url="http://localhost:50021"]
+[register_voicevox_app url="http://localhost:50021"]
 
 
 ; TyranoScriptのキャラを登録
@@ -66,7 +66,7 @@ VOICEVOXの音声を読み上げるプラグインだよ。[p]
 VoiceVoxのアプリを指定します。VoiceVoxのアプリを起動しているなら
 
 ```TyranoScript
-[regist_voicevox_app url="http://localhost:50021"]
+[register_voicevox_app url="http://localhost:50021"]
 ```
 
 ### [voicevox_on] VOICEVOX
