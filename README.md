@@ -25,10 +25,11 @@ releaseページからファイルをダウンロード。
 [chara_new name="zunda" storage="chara/zunda/normal.png" jname="ずんだもん"]
 
 ; VOICEVOXのプリセットを作成(話速、音程、音量などを指定する)
-[voicevox_preset id="zunda_preset" speed="1.3" pitch="0.05" intonation="1.1" volume="1.5" pre="0.1" post="0.1"]
+[voicevox_preset id="zunda_normal" speed="1.3" pitch="0.05" intonation="1.1" volume="1.5" pre="0.1" post="0.1"]
+[voicevox_preset id="zunda_slow" speed="1.3" pitch="0.05" intonation="1.1" volume="1.5" pre="0.1" post="0.1"]
 
 ; VOICEVOXの音声登録 & 使用プリセットの指定
-[voicevox_chara name="zunda" speaker="ずんだもん" style="ノーマル" preset="zunda_preset"]
+[voicevox_chara name="zunda" speaker="ずんだもん" style="ノーマル" preset="zunda_normal"]
 
 ; VOICEVOXの音声読み上げ開始(自動で字幕送り機能は未実装)
 [voicevox_on]
@@ -47,8 +48,7 @@ VOICEVOXの音声を読み上げるプラグインだよ。[p]
 # zunda
 途中でスタイルを変更したり……[p]
 
-[voicevox_preset id="zunda_slow_preset" speed="1.0"]
-
+[voicevox_chara name="zunda" preset="zunda_slow"]
 # zunda
 途中でプリセットをつけ替えて話し方を変更できるよ
 
@@ -70,7 +70,7 @@ VOICEVOXの音声を読み上げるプラグインだよ。[p]
 
 ティラノスクリプトのアプリを起動時にVOICEVOXを起動しておく必要があります。
 
-### VoiceVoxの登録
+### [register_voicevox_app] VoiceVoxの登録
 
 VoiceVoxのアプリを指定します。
 
@@ -82,7 +82,7 @@ VoiceVoxのアプリを指定します。
 [register_voicevox_app url="http://localhost:50021"]
 ```
 
-### [voicevox_on] VOICEVOX
+### [voicevox_on] VOICEVOXの読み上げ有効化
 
 キャラクターの音声読み上げを有効にします。
 
@@ -96,7 +96,7 @@ VoiceVoxのアプリを指定します。
 ここの音声は読み上げられる
 ```
 
-### [voicevox_off] VOICEVOXの読み上げを無効にする
+### [voicevox_off] VOICEVOXの読み上げ無効化
 
 キャラクターの音声読み上げを無効にします。
 
@@ -110,7 +110,7 @@ VoiceVoxのアプリを指定します。
 ここの音声は読み上げられない
 ```
 
-### [voicevox_layer]
+### [voicevox_layer] メッセージレイヤーの選択
 
 音声読み上げを行うメッセージレイヤーを選択します。カンマ区切りによる複数指定に対応しています。デフォルトは`message0`のみ
 
