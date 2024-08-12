@@ -47,7 +47,7 @@ function init(): void {
   TYRANO.kag.on("tag-text-message", (e) => {
     const message = e.target.val;
     const chara_name = TYRANO.kag.chara.getCharaName(true);
-    const chara_id = TYRANO.kag.stat.jcharas[chara_name] || "";
+    const chara_id = TYRANO.kag.stat.jcharas[chara_name] || chara_name;
 
     const layer = TYRANO.kag.stat.current_layer;
 
