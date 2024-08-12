@@ -1,4 +1,4 @@
-import { SpeakerInfo, store } from "../models/store";
+import { defaultPreset, Preset, SpeakerInfo, store } from "../models/store";
 
 export class StoreService {
   setTextToSpeechEnable(bool: boolean) {
@@ -38,5 +38,11 @@ export class StoreService {
     } else {
       return undefined;
     }
+  }
+
+  updatePreset(id: string, preset: Partial<Preset>) {
+    const prePreset = store.presets[id] || defaultPreset;
+
+    store.presets[id] = { ...prePreset, ...preset };
   }
 }
