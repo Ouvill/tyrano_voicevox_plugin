@@ -2,28 +2,25 @@ import { SpeechEngine } from "./speech-engine";
 import { SpeechTask } from "../speech-task";
 import createClient from "openapi-fetch";
 import { paths } from "../../types/voicevox-api";
+import { AbortError } from "../abort-error.ts";
 
 export class VoicevoxClient implements SpeechEngine {
-  private baseUrl: string;
-  private abortController: AbortController | null = null;
+  private readonly baseUrl: string;
 
   constructor(url: string) {
     this.baseUrl = url;
   }
 
   private async getSpeakerId({
-    baseUrl,
+    client,
     speakerName,
     styleName,
-    signal,
   }: {
-    baseUrl: string;
+    client: ReturnType<typeof createClient<paths>>;
     speakerName: string;
     styleName?: string;
-    signal: AbortSignal;
   }): Promise<number> {
-    const client = createClient<paths>({ baseUrl });
-    const { data, error } = await client.GET("/speakers", { signal });
+    const { data, error } = await client.GET("/speakers");
 
     if (error || !data) {
       throw new Error("Failed to fetch speakers");
@@ -38,22 +35,17 @@ export class VoicevoxClient implements SpeechEngine {
     return style.id;
   }
 
-  async generate(task: SpeechTask) {
-    if (this.abortController) {
-      this.cancel();
-    }
-
-    this.abortController = new AbortController();
-    const signal = this.abortController.signal;
-
+  async generate(task: SpeechTask, abortSignal: AbortSignal) {
     try {
-      const client = createClient<paths>({ baseUrl: this.baseUrl, signal });
+      const client = createClient<paths>({
+        baseUrl: this.baseUrl,
+        signal: abortSignal,
+      });
 
       const speakerId = await this.getSpeakerId({
-        baseUrl: this.baseUrl,
+        client,
         speakerName: task.engineInfo.speaker,
         styleName: task.engineInfo.style,
-        signal: signal,
       });
 
       // Generate audio query
@@ -83,17 +75,12 @@ export class VoicevoxClient implements SpeechEngine {
       if (generateError || !voice) {
         throw new Error("Failed to generate audio");
       }
-
       return voice;
-    } finally {
-      this.abortController = null;
-    }
-  }
-
-  cancel() {
-    if (this.abortController) {
-      this.abortController.abort();
-      this.abortController = null;
+    } catch (error) {
+      if (abortSignal.aborted) {
+        throw new AbortError("Speech generation aborted");
+      }
+      throw error;
     }
   }
 }

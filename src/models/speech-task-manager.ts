@@ -24,6 +24,7 @@ export class SpeechTaskManager {
   private currentEngine: SpeechEngine | null = null;
   private currentPlayer: SoundPlayer | TyranoSoundPlayer | null = null;
   private engineManager = new EngineManager();
+  private abortController: AbortController | null = null;
 
   enqueue(task: SpeechTask) {
     this.queue.push(task);
@@ -37,19 +38,31 @@ export class SpeechTaskManager {
     this.isProcessing = true;
 
     while (this.queue.length > 0) {
+      this.abortController = new AbortController();
+      const signal = this.abortController.signal;
+
       try {
         const task = this.queue.shift()!;
         const engine = this.engineManager.getEngine(task.engineInfo.type);
         this.currentEngine = engine;
-        const voice_file = await engine.generate(task);
+        const voice_file = await engine.generate(task, signal);
+
+        if (signal.aborted) {
+          continue;
+        }
 
         const tyranoPlayer = new TyranoSoundPlayer(task.buf);
         this.currentPlayer = tyranoPlayer;
 
         await tyranoPlayer.play(voice_file);
       } catch (e) {
-        console.error(e);
+        if (signal.aborted) {
+          console.log("Task was cancelled");
+        } else {
+          console.error(e);
+        }
       } finally {
+        this.abortController = null;
         this.currentEngine = null;
         this.currentPlayer = null;
       }
@@ -64,8 +77,11 @@ export class SpeechTaskManager {
   }
 
   cancelCurrentTask() {
+    if (this.abortController) {
+      this.abortController.abort();
+    }
+
     if (this.currentEngine) {
-      this.currentEngine.cancel();
       this.currentEngine = null;
     }
 
