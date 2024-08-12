@@ -37,20 +37,22 @@ export class SpeechTaskManager {
     this.isProcessing = true;
 
     while (this.queue.length > 0) {
-      const task = this.queue.shift()!;
-      const engine = this.engineManager.getEngine(task.engineInfo.type);
-      this.currentEngine = engine;
-      const voice_file = await engine.generate(task);
-      this.currentEngine = null;
+      try {
+        const task = this.queue.shift()!;
+        const engine = this.engineManager.getEngine(task.engineInfo.type);
+        this.currentEngine = engine;
+        const voice_file = await engine.generate(task);
 
-      // const player = new SoundPlayer();
-      const tyranoPlayer = new TyranoSoundPlayer(1);
-      this.currentPlayer = tyranoPlayer;
-      // await player.play(voice_file).catch((e) => {
-      //   console.log(e.message);
-      // });
-      await tyranoPlayer.play(voice_file);
-      this.currentPlayer = null;
+        const tyranoPlayer = new TyranoSoundPlayer(task.buf);
+        this.currentPlayer = tyranoPlayer;
+
+        await tyranoPlayer.play(voice_file);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        this.currentEngine = null;
+        this.currentPlayer = null;
+      }
     }
 
     this.isProcessing = false;
