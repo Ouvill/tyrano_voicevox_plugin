@@ -352,4 +352,9 @@ const extendTags: Record<string, Tag> = {
   },
 };
 
-extendMasterTag(extendTags);
+/**
+ * VOICEVOX操作用のティラノスクリプトタグを登録する。
+ */
+export function registerVoiceVoxTag() {
+  extendMasterTag(extendTags);
+}

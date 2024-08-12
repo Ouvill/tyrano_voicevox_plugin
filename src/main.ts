@@ -1,8 +1,8 @@
 import { EventBus, StrictEventMap } from "./models/event-bus";
 import { SpeechTaskManager } from "./models/speech-task-manager.ts";
 import { store } from "./models/store.ts";
-import "./patch.ts";
-import "./presentation/tag.ts";
+import { patchJQuery } from "./patch.ts";
+import { registerVoiceVoxTag } from "./presentation/tag.ts";
 
 const PLUGIN_NAME = "TYRANO_VOICEVOX_PLUGIN";
 
@@ -28,8 +28,20 @@ function init(): void {
     window.tyrano.plugin[PLUGIN_NAME] !== undefined
   ) {
     return;
+  } else {
+    window.tyrano.plugin[PLUGIN_NAME] = PLUGIN_NAME;
   }
 
+  //@ts-expect-error
+  patchJQuery($);
+
+  registerVoiceVoxTag();
+
+  // Plugin利用者が変数確認しやすいようにティラノスクリプト側に変数登録
+  // (不要)
+  TYRANO.kag.stat.f["voicevox"] = store;
+
+  // イベント処理の登録
   const eventBus = EventBus.getInstance<AppEventMap>();
   // メッセージウィンドウが更新されたら発火
   TYRANO.kag.on("tag-text-message", (e) => {
