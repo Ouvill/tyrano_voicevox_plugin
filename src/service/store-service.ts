@@ -1,4 +1,10 @@
-import { defaultPreset, Preset, SpeakerInfo, store } from "../models/store";
+import {
+  defaultPreset,
+  defaultSpeakerInfo,
+  Preset,
+  SpeakerInfo,
+  store,
+} from "../models/store";
 
 export class StoreService {
   setTextToSpeechEnable(bool: boolean) {
@@ -13,14 +19,8 @@ export class StoreService {
     store.layers = layers_str.split(",").map((layer) => layer.trim());
   }
 
-  setChara(charaId: string, info: SpeakerInfo) {
-    store.charas[charaId] = info;
-  }
-
   updateChara(charaId: string, info: DeepPartial<SpeakerInfo>) {
-    const chara = this.getChara(charaId);
-
-    if (chara === undefined) return;
+    const chara = this.getChara(charaId) || defaultSpeakerInfo;
 
     store.charas[charaId] = {
       ...chara,

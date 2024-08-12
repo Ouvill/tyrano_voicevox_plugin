@@ -10,6 +10,14 @@ export type SpeakerInfo = {
   engine: EngineInfo;
 };
 
+export const defaultSpeakerInfo: SpeakerInfo = {
+  buf: 1,
+  engine: {
+    type: "voicevox",
+    speaker: "",
+  },
+};
+
 /**
  * VOVOICEVOXの音程調整設定
  */

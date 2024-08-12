@@ -1,6 +1,6 @@
 import { StoreService } from "../service/store-service.ts";
 import { EngineInfo } from "../models/speech-task.ts";
-import { Preset } from "../models/store.ts";
+import { Preset, SpeakerInfo } from "../models/store.ts";
 
 type Tag = {
   vital: string[];
@@ -243,45 +243,36 @@ const extendTags: Record<string, Tag> = {
         console.error("voicevox error: キャラクター名を指定してください");
         return;
       }
-      let tmpBuf;
-      if (typeof pm.buf === "string") {
-        tmpBuf = parseInt(pm.buf);
-      } else if (typeof pm.buf === "number") {
-        tmpBuf = pm.buf;
+      const name = pm.name;
+
+      const tmpChara: Partial<SpeakerInfo> = {};
+      const tmpEngine: Partial<EngineInfo> = {
+        type: "voicevox",
+      };
+
+      const buf = parseNumberParameter(pm, "buf");
+      if (buf != undefined) {
+        tmpChara.buf = buf;
       }
 
-      const defaultEngine: EngineInfo = {
-        type: "voicevox",
-        speaker: "",
-      };
-      const tmpEngine: Partial<EngineInfo> = {};
-
-      if (typeof pm.speaker === "string") {
+      if (isString(pm.speaker)) {
         tmpEngine.speaker = pm.speaker;
       }
 
-      if (typeof pm.style === "string") {
+      if (isString(pm.style)) {
         tmpEngine.style = pm.style;
       }
 
       if (isString(pm.preset)) {
-        tmpEngine.preset = pm.preset
+        tmpEngine.preset = pm.preset;
       }
 
-      if (store.getChara(pm.name)) {
-        store.updateChara(pm.name, {
-          buf: tmpBuf,
-          engine: tmpEngine,
-        });
-      } else {
-        store.setChara(pm.name, {
-          buf: tmpBuf || 1,
-          engine: {
-            ...defaultEngine,
-            ...tmpEngine,
-          },
-        });
-      }
+      store.updateChara(name, {
+        ...tmpChara,
+        engine: {
+          ...tmpEngine,
+        },
+      });
 
       if (pm.next) {
         TYRANO.kag.ftag.nextOrder();
