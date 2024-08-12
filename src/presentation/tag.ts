@@ -181,10 +181,10 @@ const extendTags: Record<string, Tag> = {
    * ボイス・読み上げ
    *
    * :title
-   * VoiceVoxの読み上げの無効化
+   * 読み上げるメッセージレイヤーの指定
    *
    * :exp
-   * VoiceVoxの読み上げを無効化します
+   * 音声読み上げを行うメッセージレイヤーを選択します。カンマ区切りによる複数指定に対応しています。デフォルトは`message0`のみ
    *
    * :param
    *
