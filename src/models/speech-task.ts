@@ -1,3 +1,5 @@
+import { Preset } from "./store.ts";
+
 export interface VoiceVoxInfo {
   type: "voicevox";
   speaker: string;
@@ -7,8 +9,17 @@ export interface VoiceVoxInfo {
 
 export type EngineInfo = VoiceVoxInfo;
 
+export interface VoiceVoxTask {
+  type: "voicevox";
+  speaker: string;
+  style?: string;
+  preset?: Preset;
+}
+
+export type EngineTask = VoiceVoxTask
+
 export interface SpeechTask {
   text: string;
   buf: number;
-  engineInfo: EngineInfo;
+  engineInfo: EngineTask;
 }

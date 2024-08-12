@@ -61,6 +61,11 @@ export class VoicevoxClient implements SpeechEngine {
         throw new Error("Failed to fetch audio");
       }
 
+      const appliedPresetQuery = {
+        ...audioQuery,
+        ...task.engineInfo.preset,
+      };
+
       // Generate audio
       const { data: voice, error: generateError } = await client.POST(
         "/synthesis",
@@ -68,7 +73,7 @@ export class VoicevoxClient implements SpeechEngine {
           params: {
             query: { speaker: speakerId },
           },
-          body: audioQuery,
+          body: appliedPresetQuery,
           parseAs: "blob",
         },
       );

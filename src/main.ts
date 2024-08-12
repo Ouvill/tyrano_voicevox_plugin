@@ -1,6 +1,6 @@
 import { EventBus, StrictEventMap } from "./models/event-bus";
 import { SpeechTaskManager } from "./models/speech-task-manager.ts";
-import { store } from "./models/store.ts";
+import { Preset, store } from "./models/store.ts";
 import { patchJQuery } from "./patch.ts";
 import { registerVoiceVoxTag } from "./presentation/tag.ts";
 
@@ -79,22 +79,28 @@ function init(): void {
       return;
     }
 
-    const speaker = store.charas[chara_id];
-    if (!speaker) {
+    const chara_voice = store.charas[chara_id];
+    if (!chara_voice) {
       return;
     }
     if (!store.layers.includes(layer)) {
       return;
     }
 
+    // presetの取得
+    let preset: Preset | undefined;
+    if (chara_voice.engine.preset && store.presets[chara_voice.engine.preset]) {
+      preset = store.presets[chara_voice.engine.preset];
+    }
+
     taskManager.enqueue({
       text: message,
-      buf: speaker.buf,
+      buf: chara_voice.buf,
       engineInfo: {
         type: "voicevox",
-        speaker: speaker.engine.speaker,
-        style: speaker.engine.style,
-        preset: speaker.engine.preset,
+        speaker: chara_voice.engine.speaker,
+        style: chara_voice.engine.style,
+        preset: preset,
       },
     });
   });

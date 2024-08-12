@@ -226,6 +226,7 @@ const extendTags: Record<string, Tag> = {
    * buf = 音声を鳴らす音声スロットを指定します。デフォルトは 1
    * speaker = ボイスボックスのキャラクターを指定します。[四国めたん、ずんだもん、春日部つむぎ]
    * style = 声のスタイルを指定します。[ノーマル、あまあま、つんつん]
+   * preset = [voicevox_preset]で登録したidを指定します。
    *
    * #[end]
    */
@@ -261,6 +262,10 @@ const extendTags: Record<string, Tag> = {
 
       if (typeof pm.style === "string") {
         tmpEngine.style = pm.style;
+      }
+
+      if (isString(pm.preset)) {
+        tmpEngine.preset = pm.preset
       }
 
       if (store.getChara(pm.name)) {
