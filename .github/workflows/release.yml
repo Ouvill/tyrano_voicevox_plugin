@@ -1,0 +1,42 @@
+name: release.yml
+on:
+  push:
+    branches: [ main ]
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm run build
+
+      - name: Create Release ZIP
+        run: |
+          cd dist
+          zip -r ../tyrano_voicevox_plugin.zip *
+          cd ..
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tyrano_voicevox_plugin
+          path: dist/*
+
+      - name: Create Release Draft
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: tyrano_voicevox_plugin.zip
+          draft: true
+
+
+
