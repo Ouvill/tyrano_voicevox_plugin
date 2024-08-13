@@ -22,7 +22,7 @@ export class TyranoSoundPlayer {
     });
   }
 
-  async play(blob: Blob) {
+  async play({ charaName, blob }: { charaName: string; blob: Blob }) {
     const dataUrl = await this.wavBlobToDataUrl(blob);
 
     return new Promise<void>((resolve) => {
@@ -34,6 +34,7 @@ export class TyranoSoundPlayer {
       };
 
       TYRANO.kag.ftag.startTag("playse", {
+        chara: charaName,
         storage: dataUrl,
         buf: buf,
         stop: true,

@@ -54,7 +54,10 @@ export class SpeechTaskManager {
         const tyranoPlayer = new TyranoSoundPlayer(task.buf);
         this.currentPlayer = tyranoPlayer;
 
-        await tyranoPlayer.play(voice_file);
+        await tyranoPlayer.play({
+          charaName: task.charaName,
+          blob: voice_file,
+        });
       } catch (e) {
         if (signal.aborted) {
           console.log("Task was cancelled");

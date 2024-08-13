@@ -19,6 +19,7 @@ export interface VoiceVoxTask {
 export type EngineTask = VoiceVoxTask;
 
 export interface SpeechTask {
+  charaName: string;
   text: string;
   isAquesTalkNotation: boolean;
   buf: number;

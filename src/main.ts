@@ -103,6 +103,7 @@ function init(): void {
     }
 
     taskManager.enqueue({
+      charaName: chara_id,
       text: text,
       isAquesTalkNotation,
       buf: chara_voice.buf,
