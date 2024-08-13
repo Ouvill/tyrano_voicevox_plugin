@@ -35,6 +35,32 @@ export class VoicevoxClient implements SpeechEngine {
     return style.id;
   }
 
+  private async getAccentPhrases({
+    client,
+    text,
+    speakerId,
+    isAquesTalkNotation,
+  }: {
+    client: ReturnType<typeof createClient<paths>>;
+    text: string;
+    speakerId: number;
+    isAquesTalkNotation: boolean;
+  }) {
+    const { data, error } = await client.POST("/accent_phrases", {
+      params: {
+        query: {
+          text,
+          speaker: speakerId,
+          is_kana: isAquesTalkNotation,
+        },
+      },
+    });
+    if (error || !data) {
+      throw new Error(`Faild to fetch accent_phrases ${error.text}`);
+    }
+    return data;
+  }
+
   async generate(task: SpeechTask, abortSignal: AbortSignal) {
     try {
       const client = createClient<paths>({
@@ -48,8 +74,7 @@ export class VoicevoxClient implements SpeechEngine {
         styleName: task.engineInfo.style,
       });
 
-      // Generate audio query
-      const { data: audioQuery, error: queryError } = await client.POST(
+      const { data: baseAudioQuery, error: queryError } = await client.POST(
         "/audio_query",
         {
           params: {
@@ -57,13 +82,27 @@ export class VoicevoxClient implements SpeechEngine {
           },
         },
       );
-      if (queryError || !audioQuery) {
+      if (queryError || !baseAudioQuery) {
         throw new Error("Failed to fetch audio");
       }
 
-      const appliedPresetQuery = {
-        ...audioQuery,
+      // AquesTalk記法のとき、queryを更新
+      let accentPhrases = baseAudioQuery.accent_phrases;
+      let kana = baseAudioQuery.kana;
+      if (task.isAquesTalkNotation) {
+        accentPhrases = await this.getAccentPhrases({
+          client,
+          text: task.text,
+          speakerId: speakerId,
+          isAquesTalkNotation: task.isAquesTalkNotation,
+        });
+        kana = task.text;
+      }
+      const audioQuery = {
+        ...baseAudioQuery,
+        accent_phrases: accentPhrases,
         ...task.engineInfo.preset,
+        kana,
       };
 
       // Generate audio
@@ -73,7 +112,7 @@ export class VoicevoxClient implements SpeechEngine {
           params: {
             query: { speaker: speakerId },
           },
-          body: appliedPresetQuery,
+          body: audioQuery,
           parseAs: "blob",
         },
       );

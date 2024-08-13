@@ -48,6 +48,16 @@ export const defaultPreset: Preset = {
 };
 
 /**
+ * メッセージを上書きするためのキャッシュ
+ */
+export type NextMessage = {
+  /** メッセージ本体 */
+  text: string;
+  /** AquesTalk記法に従っているか */
+  isAquesTalkNotation: boolean;
+};
+
+/**
  * pluginの状態管理
  */
 type Store = {
@@ -64,6 +74,7 @@ type Store = {
   presets: {
     [key: string]: Preset;
   };
+  nextMessage?: NextMessage;
 };
 
 export const store: Store = {

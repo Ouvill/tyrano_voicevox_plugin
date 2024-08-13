@@ -346,6 +346,65 @@ const extendTags: Record<string, Tag> = {
       }
     },
   },
+
+  /**
+   * #[voicevox_ruby]
+   *
+   * :group
+   * ボイス・読み上げ
+   *
+   * :title
+   * VOICEVOX用の読み指定
+   *
+   * :exp
+   * VOICEVOX用のフリガナを指定します。
+   * 次に表示されるメッセージの読みを置換します。
+   *
+   * is_aques="true"のとき、AquesTalk風記法で解釈されます。
+   * - 全てのカナはカタカナで記述される
+   * - アクセント句は/または、で区切る。、で区切った場合に限り無音区間が挿入される。
+   * - カナの手前に_を入れるとそのカナは無声化される
+   * - アクセント位置を'で指定する。全てのアクセント句にはアクセント位置を1つ指定する必要がある。
+   * - アクセント句末に？(全角)を入れることにより疑問文の発音ができる。
+   *
+   * :param
+   * text = VoiceVoxに読ませたい文章を記述します。
+   * is_aques = `true`のとき、AquesTalk風記法で解釈します
+   *
+   * :sample
+   *
+   * #[end]
+   */
+  voicevox_ruby: {
+    // @ts-expect-error
+    kag: TYRANO.kag,
+    vital: ["text"],
+    pm: {
+      next: true,
+    },
+    start: function (pm) {
+      if (!isString(pm.text)) {
+        return;
+      }
+      const text = pm.text;
+      let is_aques: boolean;
+      if (isString(pm.is_aques)) {
+        is_aques = !!pm.is_aques;
+      } else {
+        is_aques = false;
+      }
+
+      const storeService = new StoreService();
+      storeService.setNextMessage({
+        text,
+        isAquesTalkNotation: is_aques,
+      });
+
+      if (pm.next) {
+        TYRANO.kag.ftag.nextOrder();
+      }
+    },
+  },
 };
 
 /**

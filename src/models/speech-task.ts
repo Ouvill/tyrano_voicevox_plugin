@@ -16,10 +16,11 @@ export interface VoiceVoxTask {
   preset?: Preset;
 }
 
-export type EngineTask = VoiceVoxTask
+export type EngineTask = VoiceVoxTask;
 
 export interface SpeechTask {
   text: string;
+  isAquesTalkNotation: boolean;
   buf: number;
   engineInfo: EngineTask;
 }

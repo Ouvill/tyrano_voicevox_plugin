@@ -1,6 +1,7 @@
 import {
   defaultPreset,
   defaultSpeakerInfo,
+  NextMessage,
   Preset,
   SpeakerInfo,
   store,
@@ -44,5 +45,9 @@ export class StoreService {
     const prePreset = store.presets[id] || defaultPreset;
 
     store.presets[id] = { ...prePreset, ...preset };
+  }
+
+  setNextMessage(message: NextMessage) {
+    store.nextMessage = message;
   }
 }

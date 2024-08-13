@@ -93,8 +93,18 @@ function init(): void {
       preset = store.presets[chara_voice.engine.preset];
     }
 
+    // nextMessageが指定されているときの処理
+    let text = message;
+    let isAquesTalkNotation = false;
+    if (store.nextMessage) {
+      text = store.nextMessage.text;
+      isAquesTalkNotation = store.nextMessage.isAquesTalkNotation;
+      store.nextMessage = undefined;
+    }
+
     taskManager.enqueue({
-      text: message,
+      text: text,
+      isAquesTalkNotation,
       buf: chara_voice.buf,
       engineInfo: {
         type: "voicevox",
