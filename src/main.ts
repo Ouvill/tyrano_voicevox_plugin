@@ -4,6 +4,7 @@ import { Preset, getStore } from "./models/store.ts";
 import { patchJQuery } from "./patch.ts";
 import { registerVoiceVoxTag } from "./presentation/tag.ts";
 import { PLUGIN_NAME } from "./constants.ts";
+import { isDebugMode } from "./lib/is-debug-mode.ts";
 
 interface AppEventMap extends StrictEventMap {
   message: {
@@ -21,6 +22,11 @@ const taskManager = new SpeechTaskManager();
  * @return {void}
  */
 function init(): void {
+  if (isDebugMode()) {
+    console.log("debug mode");
+  }
+
+  // setInitializedFlag
   if (
     !window.tyrano ||
     !window.tyrano.plugin ||
@@ -81,7 +87,6 @@ function init(): void {
       return;
     }
 
-
     if (!store.layers.includes(layer)) {
       return;
     }
@@ -116,5 +121,4 @@ function init(): void {
   });
 }
 
-TYRANO.kag.enableEventLogging();
 init();
