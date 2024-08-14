@@ -1,0 +1,1 @@
+export const PLUGIN_NAME = "TYRANO_VOICEVOX_PLUGIN";

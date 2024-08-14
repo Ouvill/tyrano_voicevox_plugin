@@ -1,4 +1,5 @@
 import { EngineInfo } from "./speech-task.ts";
+import { PLUGIN_NAME } from "../constants.ts";
 
 /**
  * キャラのコンフィグ
@@ -60,7 +61,7 @@ export type NextMessage = {
 /**
  * pluginの状態管理
  */
-type Store = {
+export type Store = {
   /** 音声読み上げ機能が有効かどうか */
   isTextToSpeechEnabled: boolean;
   /** voicevoxのurl */
@@ -77,10 +78,19 @@ type Store = {
   nextMessage?: NextMessage;
 };
 
-export const store: Store = {
+const store: Store = {
   isTextToSpeechEnabled: false,
   voicevox_url: "http://localhost:50021",
   charas: {},
   layers: ["message0"],
   presets: {},
+};
+
+export const getStore = (): Store => {
+  if (TYRANO.kag.stat.f[PLUGIN_NAME] !== undefined) {
+    return TYRANO.kag.stat.f[PLUGIN_NAME] as Store;
+  } else {
+    TYRANO.kag.stat.f[PLUGIN_NAME] = store;
+    return TYRANO.kag.stat.f[PLUGIN_NAME];
+  }
 };

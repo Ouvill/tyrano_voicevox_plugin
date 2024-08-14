@@ -1,29 +1,36 @@
 import {
   defaultPreset,
   defaultSpeakerInfo,
+  getStore,
   NextMessage,
   Preset,
   SpeakerInfo,
-  store,
+  Store,
 } from "../models/store";
 
 export class StoreService {
+  private store: Store;
+
+  constructor() {
+    this.store = getStore();
+  }
+
   setTextToSpeechEnable(bool: boolean) {
-    store.isTextToSpeechEnabled = bool;
+    this.store.isTextToSpeechEnabled = bool;
   }
 
   setVoiceVoxUrl(url: string) {
-    store.voicevox_url = url;
+    this.store.voicevox_url = url;
   }
 
   setLayer(layers_str: string) {
-    store.layers = layers_str.split(",").map((layer) => layer.trim());
+    this.store.layers = layers_str.split(",").map((layer) => layer.trim());
   }
 
   updateChara(charaId: string, info: DeepPartial<SpeakerInfo>) {
     const chara = this.getChara(charaId) || defaultSpeakerInfo;
 
-    store.charas[charaId] = {
+    this.store.charas[charaId] = {
       ...chara,
       ...info,
       engine: {
@@ -34,20 +41,20 @@ export class StoreService {
   }
 
   getChara(chara: string) {
-    if (store.charas[chara]) {
-      return store.charas[chara];
+    if ( this.store.charas[chara]) {
+      return  this.store.charas[chara];
     } else {
       return undefined;
     }
   }
 
   updatePreset(id: string, preset: Partial<Preset>) {
-    const prePreset = store.presets[id] || defaultPreset;
+    const prePreset =  this.store.presets[id] || defaultPreset;
 
-    store.presets[id] = { ...prePreset, ...preset };
+    this.store.presets[id] = { ...prePreset, ...preset };
   }
 
   setNextMessage(message: NextMessage) {
-    store.nextMessage = message;
+    this.store.nextMessage = message;
   }
 }

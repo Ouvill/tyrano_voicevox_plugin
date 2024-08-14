@@ -1,10 +1,9 @@
 import { EventBus, StrictEventMap } from "./models/event-bus";
 import { SpeechTaskManager } from "./models/speech-task-manager.ts";
-import { Preset, store } from "./models/store.ts";
+import { Preset, getStore } from "./models/store.ts";
 import { patchJQuery } from "./patch.ts";
 import { registerVoiceVoxTag } from "./presentation/tag.ts";
-
-const PLUGIN_NAME = "TYRANO_VOICEVOX_PLUGIN";
+import { PLUGIN_NAME } from "./constants.ts";
 
 interface AppEventMap extends StrictEventMap {
   message: {
@@ -37,12 +36,9 @@ function init(): void {
 
   registerVoiceVoxTag();
 
-  // Plugin利用者が変数確認しやすいようにティラノスクリプト側に変数登録
-  // (不要)
-  TYRANO.kag.stat.f["voicevox"] = store;
-
   // イベント処理の登録
   const eventBus = EventBus.getInstance<AppEventMap>();
+
   // メッセージウィンドウが更新されたら発火
   TYRANO.kag.on("tag-text-message", (e) => {
     const message = e.target.val;
@@ -75,6 +71,7 @@ function init(): void {
   });
 
   eventBus.on("message", ({ chara_id, layer, message }) => {
+    const store = getStore();
     if (!store.isTextToSpeechEnabled) {
       return;
     }
@@ -83,6 +80,8 @@ function init(): void {
     if (!chara_voice) {
       return;
     }
+
+
     if (!store.layers.includes(layer)) {
       return;
     }
