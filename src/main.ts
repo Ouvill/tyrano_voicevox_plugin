@@ -4,7 +4,7 @@ import { Preset, getStore } from "./models/store.ts";
 import { patchJQuery } from "./patch.ts";
 import { registerVoiceVoxTag } from "./presentation/tag.ts";
 import { PLUGIN_NAME } from "./constants.ts";
-import { isDebugMode } from "./lib/is-debug-mode.ts";
+import { isTyranoDebugMode } from "./lib/is-tyrano-debug-mode.ts";
 
 interface AppEventMap extends StrictEventMap {
   message: {
@@ -110,7 +110,7 @@ function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
  * @return {void}
  */
 function init(): void {
-  if (isDebugMode()) {
+  if (isTyranoDebugMode()) {
     console.log("debug mode");
   }
 

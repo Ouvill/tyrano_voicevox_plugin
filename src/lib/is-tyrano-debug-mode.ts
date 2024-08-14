@@ -3,7 +3,7 @@
  *
  * 「リロード」と書かれたボタンに、ui-draggable
  */
-export function isDebugMode() {
+export function isTyranoDebugMode() {
   const debugElement = document.querySelector(
     "body > .ui-draggable-handle.ui-draggable",
   );
