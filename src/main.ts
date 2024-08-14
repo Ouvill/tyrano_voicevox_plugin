@@ -17,49 +17,10 @@ interface AppEventMap extends StrictEventMap {
 const taskManager = new SpeechTaskManager();
 
 /**
- * Initializes the application by setting up event listeners and registering callbacks.
- *
- * @return {void}
+ * クリック待ちが解除されたときはページ送りなどが発生しているので
+ * キャンセル処理を行う
  */
-function init(): void {
-  if (isDebugMode()) {
-    console.log("debug mode");
-  }
-
-  // setInitializedFlag
-  if (
-    !window.tyrano ||
-    !window.tyrano.plugin ||
-    window.tyrano.plugin[PLUGIN_NAME] !== undefined
-  ) {
-    return;
-  } else {
-    window.tyrano.plugin[PLUGIN_NAME] = PLUGIN_NAME;
-  }
-
-  //@ts-expect-error
-  patchJQuery($);
-
-  registerVoiceVoxTag();
-
-  // イベント処理の登録
-  const eventBus = EventBus.getInstance<AppEventMap>();
-
-  // メッセージウィンドウが更新されたら発火
-  TYRANO.kag.on("tag-text-message", (e) => {
-    const message = e.target.val;
-    const chara_name = TYRANO.kag.chara.getCharaName(true);
-    const chara_id = TYRANO.kag.stat.jcharas[chara_name] || chara_name;
-
-    const layer = TYRANO.kag.stat.current_layer;
-
-    eventBus.emit("message", {
-      message,
-      chara_id,
-      layer,
-    });
-  });
-
+function registerCancelAllTaskHandler() {
   // [l]タグでクリック待ちが発生する。クリックイベントが発生したのち、nextorderが実行される。
   // メッセージが更新されると予想されるので、音声再生を停止
   TYRANO.kag.on("tag-l", () => {
@@ -73,6 +34,28 @@ function init(): void {
   TYRANO.kag.on("tag-p", () => {
     TYRANO.kag.once("nextorder", () => {
       taskManager.cancelAllTask();
+    });
+  });
+}
+
+
+/**
+ * メッセージが更新されたときは
+ * @param eventBus
+ */
+function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
+  // メッセージウィンドウが更新されたら発火
+  TYRANO.kag.on("tag-text-message", (e) => {
+    const message = e.target.val;
+    const chara_name = TYRANO.kag.chara.getCharaName(true);
+    const chara_id = TYRANO.kag.stat.jcharas[chara_name] || chara_name;
+
+    const layer = TYRANO.kag.stat.current_layer;
+
+    eventBus.emit("message", {
+      message,
+      chara_id,
+      layer,
     });
   });
 
@@ -119,6 +102,38 @@ function init(): void {
       },
     });
   });
+}
+
+/**
+ * Initializes the application by setting up event listeners and registering callbacks.
+ *
+ * @return {void}
+ */
+function init(): void {
+  if (isDebugMode()) {
+    console.log("debug mode");
+  }
+
+  // setInitializedFlag
+  if (
+    !window.tyrano ||
+    !window.tyrano.plugin ||
+    window.tyrano.plugin[PLUGIN_NAME] !== undefined
+  ) {
+    return;
+  } else {
+    window.tyrano.plugin[PLUGIN_NAME] = PLUGIN_NAME;
+  }
+
+  //@ts-expect-error
+  patchJQuery($);
+
+  // イベント処理の登録
+  const eventBus = EventBus.getInstance<AppEventMap>();
+
+  registerVoiceVoxTag();
+  registerCancelAllTaskHandler();
+  registerOnMessageHandler(eventBus);
 }
 
 init();
