@@ -38,7 +38,6 @@ function registerCancelAllTaskHandler() {
   });
 }
 
-
 /**
  * メッセージが更新されたときは
  * @param eventBus
@@ -104,6 +103,8 @@ function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
   });
 }
 
+const isDev = import.meta.env.MODE =="development";
+
 /**
  * Initializes the application by setting up event listeners and registering callbacks.
  *
@@ -112,6 +113,10 @@ function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
 function init(): void {
   if (isTyranoDebugMode()) {
     console.log("debug mode");
+  }
+
+  if (isDev) {
+    TYRANO.kag.enableEventLogging();
   }
 
   // setInitializedFlag
