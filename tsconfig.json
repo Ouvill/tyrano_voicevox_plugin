@@ -1,5 +1,7 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
+    "types": ["svelte"],
     "target": "ES2020",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -15,16 +17,12 @@
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
+    "verbatimModuleSyntax": false,
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    /* Type checking */
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ]
   },
   "include": [
     "src/**/*"
