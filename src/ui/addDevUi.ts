@@ -23,9 +23,13 @@ export function addDevUi() {
     reloadButtonContainer.appendChild(button);
   }
 
-  const div = document.createElement("div");
-
-  div.id = `${PLUGIN_NAME}_container`;
+  const container_id = `${PLUGIN_NAME}_container`;
+  let div = document.getElementById(container_id);
+  if (div) {
+    div.innerHTML = ``;
+  } else {
+    div = document.createElement("div");
+  }
 
   document.body.insertAdjacentElement("afterbegin", div);
   return new App({
