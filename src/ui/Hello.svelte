@@ -1,13 +1,14 @@
 <script lang="ts">
     import {isDevOpen} from "./store.ts"
     import {fade, fly} from "svelte/transition";
+
+    // ティラノスクリプトはlayer_menuのクラスのstyleが`display: none`以外の時イベントを実行しない。
+    const disable_tyrano_event_class = "layer_menu"
 </script>
 
 {#if $isDevOpen}
-    <!-- svelte-ignore -->
-    <div class="container" transition:fly={{y: 200, duration: 300}}
-         on:click={(e) => {e.stopPropagation()}}
-    >
+    <div class="container {disable_tyrano_event_class}"
+         transition:fly={{y: 200, duration: 300}}>
         <div in:fade={{duration: 300, delay: 300}}>
             <h1>VOICEVOX管理UI</h1>
             <p class="content">hello world from svelte</p>
