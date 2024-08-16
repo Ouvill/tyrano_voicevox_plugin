@@ -1,4 +1,4 @@
-import App from "./Hello.svelte";
+import App from "./App.svelte";
 import { isDevOpen } from "./store.ts";
 import { get } from "svelte/store";
 import { PLUGIN_NAME } from "../constants.ts";
