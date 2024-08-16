@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite build --watch --mode development",
-    "build": "tsc && vite build",
+    "build": " vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "@types/jquery": "^3.5.30",
     "openapi-typescript": "^7.3.0",
     "prettier": "3.3.3",
@@ -17,6 +18,7 @@
     "vite-plugin-static-copy": "^1.0.6"
   },
   "dependencies": {
-    "openapi-fetch": "^0.10.6"
+    "openapi-fetch": "^0.10.6",
+    "svelte": "^4.2.18"
   }
 }

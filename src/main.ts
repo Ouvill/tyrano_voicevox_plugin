@@ -103,20 +103,22 @@ function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
   });
 }
 
-const isDev = import.meta.env.MODE =="development";
+const isDev = import.meta.env.MODE == "development";
 
 /**
  * Initializes the application by setting up event listeners and registering callbacks.
  *
  * @return {void}
  */
-function init(): void {
+async function init() {
   if (isTyranoDebugMode()) {
     console.log("debug mode");
   }
 
   if (isDev) {
     TYRANO.kag.enableEventLogging();
+    const { addDevUi } = await import("./ui/addDevUi.ts");
+    addDevUi();
   }
 
   // setInitializedFlag
