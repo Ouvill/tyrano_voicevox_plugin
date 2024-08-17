@@ -1,8 +1,20 @@
+import { SpeechTask } from "./speech-task.ts";
+
 /**
  * Represents the structure of the event map.
  * Extend this interface to define your custom events.
  */
 export type StrictEventMap = {};
+
+export interface AppEventMap extends StrictEventMap {
+  message: {
+    chara_id: string;
+    message: string;
+    layer: string;
+  };
+
+  addTask: SpeechTask;
+}
 
 /**
  * Represents an event handler function.

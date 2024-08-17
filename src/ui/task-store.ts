@@ -26,13 +26,11 @@ function createTaskStore() {
   function generateTaskId(task: SpeechTask): TaskId {
     const taskString = JSON.stringify(task);
     const hash = djb2Hash(taskString);
-    console.log("generated hash: ", hash);
     return hash.toString(16);
   }
 
   function addTask(task: SpeechTask) {
     const taskId = generateTaskId(task);
-    console.log("generated taskId:", taskId);
     update((state) =>
       produce(state, (draft) => {
         if (!draft.data[taskId]) {
@@ -52,10 +50,23 @@ function createTaskStore() {
     return result;
   }
 
+  function removeTask(index: number) {
+    update((state) =>
+      produce(state, (draft) => {
+        const removedTaskId = draft.order.splice(index, 1)[0];
+
+        if (!draft.order.includes(removedTaskId)) {
+          delete draft.data[removedTaskId]
+        }
+      }),
+    );
+  }
+
   return {
     subscribe,
     addTask,
     getTask,
+    removeTask
   };
 }
 

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { isDevOpen } from "./store.ts";
   import { fade, fly } from "svelte/transition";
+  import { taskStore } from "./task-store.ts";
 
   // ティラノスクリプトはlayer_menuのクラスのstyleが`display: none`以外の時イベントを実行しない。
   const disable_tyrano_event_class = "layer_menu";
@@ -13,12 +14,31 @@
   >
     <div in:fade={{ duration: 300, delay: 300 }}>
       <h1>VOICEVOX管理UI</h1>
-      <p class="content">hello world from svelte</p>
+
+      <div>
+        {#if $taskStore.order.length === 0}
+          <p>データはありません</p>
+        {:else}
+          <ul class="data-table">
+
+            {#each $taskStore.order as taskId}
+              <li>
+                {$taskStore.data[taskId].charaName}: {$taskStore.data[taskId]
+                  .text}
+              </li>
+            {/each}
+          </ul>
+        {/if}
+      </div>
     </div>
   </div>
 {/if}
 
 <style>
+  * {
+    font-weight: normal;
+  }
+
   .container {
     position: fixed;
     display: flex;
@@ -28,12 +48,13 @@
     left: 0;
     right: 0;
     bottom: 0;
+    padding-top: 60px;
     color: white;
-    background: lightskyblue;
+    background: #afd3af;
     pointer-events: auto;
     z-index: 1;
   }
 
-  .content {
+  .data-table {
   }
 </style>

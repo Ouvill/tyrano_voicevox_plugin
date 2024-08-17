@@ -3,11 +3,17 @@ import { isDevOpen } from "./store.ts";
 import { get } from "svelte/store";
 import { PLUGIN_NAME } from "../constants.ts";
 import { enablePatches } from "immer";
+import { AppEventMap, EventBus } from "../models/event-bus.ts";
+import { taskStore } from "./task-store.ts";
 
 enablePatches();
 
 export function addDevUi() {
-  console.log("adding");
+  const eventBus = EventBus.getInstance<AppEventMap>();
+  eventBus.on("addTask", (task) => {
+    taskStore.addTask(task);
+  });
+
   const reloadButtonContainer = document.querySelector(
     "body > .ui-draggable-handle.ui-draggable",
   );
