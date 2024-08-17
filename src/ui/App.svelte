@@ -12,23 +12,34 @@
     class="container {disable_tyrano_event_class}"
     transition:fly={{ y: 200, duration: 300 }}
   >
-    <div in:fade={{ duration: 300, delay: 300 }}>
+    <div class="content" in:fade={{ duration: 300, delay: 300 }}>
       <h1>VOICEVOX管理UI</h1>
 
-      <div>
+      <div class="table-container">
         {#if $taskStore.order.length === 0}
-          <p>データはありません</p>
+          <p class="no-data">データはありません</p>
         {:else}
-          <ul class="data-table">
-
-            {#each $taskStore.order as taskId}
-              <li>
-                {$taskStore.data[taskId].charaName}: {$taskStore.data[taskId]
-                  .text}
-              </li>
-            {/each}
-          </ul>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>キャラクター名</th>
+                <th>テキスト</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each $taskStore.order as taskId}
+                <tr>
+                  <td>{$taskStore.data[taskId].charaName}</td>
+                  <td>{$taskStore.data[taskId].text}</td>
+                </tr>
+              {/each}
+            </tbody>
+          </table>
         {/if}
+      </div>
+      <div class="download-container">
+        <p>音声をダウンロードする</p>
+        <button>ダウンロード</button>
       </div>
     </div>
   </div>
@@ -36,25 +47,78 @@
 
 <style>
   * {
-    font-weight: normal;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
   }
 
   .container {
     position: fixed;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    padding-top: 60px;
-    color: white;
-    background: #afd3af;
+    display: block;
+    background: rgba(175, 211, 175, 0.95);
+    color: #333;
     pointer-events: auto;
     z-index: 1;
+    overflow: hidden;
+  }
+
+  .content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+  }
+
+  .table-container {
+    flex: 1;
+    overflow-y: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
   .data-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .data-table th,
+  .data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .data-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+
+  .data-table tr:hover {
+    background-color: #f0f0f0;
+  }
+
+  .no-data {
+    text-align: center;
+    padding: 20px;
+    color: #777;
+  }
+
+  .download-container {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
   }
 </style>

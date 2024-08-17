@@ -38,6 +38,7 @@ export function addDevUi() {
     div.innerHTML = ``;
   } else {
     div = document.createElement("div");
+    div.id = container_id;
   }
 
   document.body.insertAdjacentElement("afterbegin", div);
