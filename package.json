@@ -21,6 +21,7 @@
     "vite-plugin-static-copy": "^1.0.6"
   },
   "dependencies": {
+    "immer": "^10.1.1",
     "openapi-fetch": "^0.10.6",
     "svelte": "^4.2.18"
   }

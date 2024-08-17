@@ -2,6 +2,9 @@ import App from "./App.svelte";
 import { isDevOpen } from "./store.ts";
 import { get } from "svelte/store";
 import { PLUGIN_NAME } from "../constants.ts";
+import { enablePatches } from "immer";
+
+enablePatches();
 
 export function addDevUi() {
   console.log("adding");

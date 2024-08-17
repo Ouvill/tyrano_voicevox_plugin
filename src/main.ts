@@ -113,12 +113,12 @@ const isDev = import.meta.env.MODE == "development";
 async function init() {
   if (isTyranoDebugMode()) {
     console.log("debug mode");
+    const { addDevUi } = await import("./ui/addDevUi.ts");
+    addDevUi();
   }
 
   if (isDev) {
     TYRANO.kag.enableEventLogging();
-    const { addDevUi } = await import("./ui/addDevUi.ts");
-    addDevUi();
   }
 
   // setInitializedFlag
