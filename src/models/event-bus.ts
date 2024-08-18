@@ -13,7 +13,7 @@ export interface AppEventMap extends StrictEventMap {
     layer: string;
   };
 
-  addTask: SpeechTask;
+  generatedSpeech: SpeechTask;
 }
 
 /**

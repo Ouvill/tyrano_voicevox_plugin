@@ -54,7 +54,7 @@
 
       <div class="table-container">
         {#if $taskStore.order.length === 0}
-          <p class="no-data">データはありません</p>
+          <p class="no-data">生成した音声データはありません</p>
         {:else}
           <table class="data-table">
             <thead>

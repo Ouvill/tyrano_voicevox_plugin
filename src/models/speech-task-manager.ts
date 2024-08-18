@@ -1,12 +1,34 @@
 import { SpeechEngine } from "./engine/speech-engine";
 import { VoicevoxClient } from "./engine/voicevox-client.ts";
-import { SpeechTask } from "./speech-task";
+import { generateTaskId, SpeechTask } from "./speech-task";
 import { SoundPlayer } from "./sound-player.ts";
 import { TyranoSoundPlayer } from "./tyrano-sound-player.ts";
 import { getStore } from "./store.ts";
+import { AppEventMap, EventBus } from "./event-bus.ts";
 
 // 今後増やす
 type EngineType = "voicevox";
+
+/**
+ * 音声データを取得する
+ * @param task
+ * @param option
+ */
+async function fetchSpeechData(
+  task: SpeechTask,
+  option?: Partial<{ signal?: AbortSignal }>,
+): Promise<Blob> {
+  const taskId = generateTaskId(task);
+  const response = await fetch(`./data/sound/voicevox/${taskId}.wav`, {
+    signal: option?.signal,
+  });
+  if (!response.ok) {
+    throw new Error(
+      `Faild to fetch speech data: ${response.status} ${response.statusText}`,
+    );
+  }
+  return await response.blob();
+}
 
 export class EngineManager {
   getEngine(type: EngineType): SpeechEngine {
@@ -36,6 +58,7 @@ export class SpeechTaskManager {
       return;
     }
     this.isProcessing = true;
+    const eventBus = EventBus.getInstance<AppEventMap>();
 
     while (this.queue.length > 0) {
       this.abortController = new AbortController();
@@ -44,9 +67,15 @@ export class SpeechTaskManager {
       try {
         const task = this.queue.shift()!;
 
-        const engine = this.engineManager.getEngine(task.engineInfo.type);
-        this.currentEngine = engine;
-        const voice_file = await engine.generate(task, signal);
+        let voice_file;
+        try {
+          voice_file = await fetchSpeechData(task, { signal });
+        } catch (e) {
+          const engine = this.engineManager.getEngine(task.engineInfo.type);
+          this.currentEngine = engine;
+          voice_file = await engine.generate(task, signal);
+          eventBus.emit("generatedSpeech", task);
+        }
 
         if (signal.aborted) {
           continue;

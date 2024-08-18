@@ -94,7 +94,6 @@ function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
       },
     };
 
-    eventBus.emit("addTask", task);
     taskManager.enqueue(task);
   });
 }
