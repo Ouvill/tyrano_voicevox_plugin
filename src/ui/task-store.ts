@@ -1,7 +1,6 @@
-import { SpeechTask } from "../models/speech-task.ts";
+import {generateTaskId, SpeechTask} from "../models/speech-task.ts";
 import { writable } from "svelte/store";
 import { produce } from "immer";
-import { djb2Hash } from "../lib/djb2Hash.ts";
 
 type TaskId = string;
 
@@ -18,12 +17,6 @@ function removeElement<T>(a: T[], b: T[]) {
 
 function createTaskStore() {
   const { subscribe, update } = writable<TaskMemoryStore>(initialData);
-
-  function generateTaskId(task: SpeechTask): TaskId {
-    const taskString = JSON.stringify(task);
-    const hash = djb2Hash(taskString);
-    return hash.toString(16);
-  }
 
   function addTask(task: SpeechTask) {
     const taskId = generateTaskId(task);
