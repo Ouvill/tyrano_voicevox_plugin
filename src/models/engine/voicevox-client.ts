@@ -1,8 +1,11 @@
 import { SpeechEngine } from "./speech-engine";
 import { SpeechTask } from "../speech-task";
 import createClient from "openapi-fetch";
+import type { components } from "../../types/voicevox-api";
 import { paths } from "../../types/voicevox-api";
 import { AbortError } from "../abort-error.ts";
+
+type AudioQuery = components["schemas"]["AudioQuery"];
 
 export class VoicevoxClient implements SpeechEngine {
   private readonly baseUrl: string;
@@ -61,10 +64,55 @@ export class VoicevoxClient implements SpeechEngine {
     return data;
   }
 
-  async generate(
-    task: SpeechTask,
-    options?: Partial<{ signal: AbortSignal }>,
-  ) {
+  private async getAudioQuery({
+    client,
+    text,
+    speakerId,
+  }: {
+    client: ReturnType<typeof createClient<paths>>;
+    text: string;
+    speakerId: number;
+  }) {
+    const { data, error } = await client.POST("/audio_query", {
+      params: {
+        query: { speaker: speakerId, text: text },
+      },
+    });
+    if (error || !data) {
+      throw new Error("Failed to fetch audio");
+    }
+
+    return data;
+  }
+
+  private async getSynthesis({
+    client,
+    speakerId,
+    audioQuery,
+  }: {
+    client: ReturnType<typeof createClient<paths>>;
+    speakerId: number;
+    audioQuery: AudioQuery;
+  }): Promise<Blob> {
+    // Generate audio
+    const { data: voice, error: generateError } = await client.POST(
+      "/synthesis",
+      {
+        params: {
+          query: { speaker: speakerId },
+        },
+        body: audioQuery,
+        parseAs: "blob",
+      },
+    );
+    if (generateError || !voice) {
+      throw new Error("Failed to generate audio");
+    }
+
+    return voice;
+  }
+
+  async generate(task: SpeechTask, options?: Partial<{ signal: AbortSignal }>) {
     let abortSignal = options?.signal;
 
     try {
@@ -79,17 +127,11 @@ export class VoicevoxClient implements SpeechEngine {
         styleName: task.engineInfo.style,
       });
 
-      const { data: baseAudioQuery, error: queryError } = await client.POST(
-        "/audio_query",
-        {
-          params: {
-            query: { speaker: speakerId, text: task.text },
-          },
-        },
-      );
-      if (queryError || !baseAudioQuery) {
-        throw new Error("Failed to fetch audio");
-      }
+      const baseAudioQuery = await this.getAudioQuery({
+        client,
+        speakerId,
+        text: task.text,
+      });
 
       // AquesTalk記法のとき、queryを更新
       let accentPhrases = baseAudioQuery.accent_phrases;
@@ -103,28 +145,18 @@ export class VoicevoxClient implements SpeechEngine {
         });
         kana = task.text;
       }
-      const audioQuery = {
+      const audioQuery: AudioQuery = {
         ...baseAudioQuery,
         accent_phrases: accentPhrases,
         ...task.engineInfo.preset,
         kana,
       };
 
-      // Generate audio
-      const { data: voice, error: generateError } = await client.POST(
-        "/synthesis",
-        {
-          params: {
-            query: { speaker: speakerId },
-          },
-          body: audioQuery,
-          parseAs: "blob",
-        },
-      );
-      if (generateError || !voice) {
-        throw new Error("Failed to generate audio");
-      }
-      return voice;
+      return await this.getSynthesis({
+        client,
+        speakerId,
+        audioQuery,
+      });
     } catch (error) {
       if (abortSignal?.aborted) {
         throw new AbortError("Speech generation aborted");
