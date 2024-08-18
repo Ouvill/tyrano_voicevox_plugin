@@ -3,8 +3,8 @@ import { EngineManager } from "./speech-task-manager.ts";
 import JSZip from "jszip";
 import { AbortError } from "./abort-error.ts";
 
-export class SpeechDownloader {
-  async generateZipFile(
+export class Zipper {
+  async generate(
     tasks: SpeechTask[],
     signal: AbortSignal,
     progressCallback?: (progress: number) => void,

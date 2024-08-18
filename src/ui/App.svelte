@@ -2,7 +2,7 @@
   import { isDevOpen } from "./store.ts";
   import { fade, fly } from "svelte/transition";
   import { taskStore } from "./task-store.ts";
-  import { SpeechDownloader } from "../models/downloader.ts";
+  import { Zipper } from "../models/zipper.ts";
   import { get } from "svelte/store";
   import { AbortError } from "../models/abort-error.ts";
 
@@ -41,8 +41,8 @@
         throw new AbortError("downlaod aborted");
       });
 
-      const downloader = new SpeechDownloader();
-      const zip = await downloader.generateZipFile(tasks, signal, (p) => {
+      const zipper = new Zipper();
+      const zip = await zipper.generate(tasks, signal, (p) => {
         progress = p;
       });
 
