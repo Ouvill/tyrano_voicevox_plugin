@@ -1,4 +1,5 @@
 import { Preset } from "./store.ts";
+import {djb2Hash} from "../lib/djb2Hash.ts";
 
 export interface VoiceVoxInfo {
   type: "voicevox";
@@ -24,4 +25,10 @@ export interface SpeechTask {
   isAquesTalkNotation: boolean;
   buf: number;
   engineInfo: EngineTask;
+}
+
+export function generateTaskId(task: SpeechTask) {
+  const taskString = JSON.stringify(task);
+  const hash = djb2Hash(taskString);
+  return hash.toString(16);
 }

@@ -8,7 +8,7 @@ import { getStore } from "./store.ts";
 // 今後増やす
 type EngineType = "voicevox";
 
-class EngineManager {
+export class EngineManager {
   getEngine(type: EngineType): SpeechEngine {
     if (type == "voicevox") {
       return new VoicevoxClient(getStore().voicevox_url);
@@ -43,6 +43,7 @@ export class SpeechTaskManager {
 
       try {
         const task = this.queue.shift()!;
+
         const engine = this.engineManager.getEngine(task.engineInfo.type);
         this.currentEngine = engine;
         const voice_file = await engine.generate(task, signal);

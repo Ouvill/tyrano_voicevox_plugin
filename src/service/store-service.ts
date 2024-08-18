@@ -41,15 +41,15 @@ export class StoreService {
   }
 
   getChara(chara: string) {
-    if ( this.store.charas[chara]) {
-      return  this.store.charas[chara];
+    if (this.store.charas[chara]) {
+      return this.store.charas[chara];
     } else {
       return undefined;
     }
   }
 
   updatePreset(id: string, preset: Partial<Preset>) {
-    const prePreset =  this.store.presets[id] || defaultPreset;
+    const prePreset = this.store.presets[id] || defaultPreset;
 
     this.store.presets[id] = { ...prePreset, ...preset };
   }

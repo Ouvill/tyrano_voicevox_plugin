@@ -1,18 +1,11 @@
-import { EventBus, StrictEventMap } from "./models/event-bus";
+import { AppEventMap, EventBus } from "./models/event-bus";
 import { SpeechTaskManager } from "./models/speech-task-manager.ts";
 import { Preset, getStore } from "./models/store.ts";
 import { patchJQuery } from "./patch.ts";
 import { registerVoiceVoxTag } from "./presentation/tag.ts";
 import { PLUGIN_NAME } from "./constants.ts";
 import { isTyranoDebugMode } from "./lib/is-tyrano-debug-mode.ts";
-
-interface AppEventMap extends StrictEventMap {
-  message: {
-    chara_id: string;
-    message: string;
-    layer: string;
-  };
-}
+import { SpeechTask } from "./models/speech-task.ts";
 
 const taskManager = new SpeechTaskManager();
 
@@ -88,7 +81,7 @@ function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
       store.nextMessage = undefined;
     }
 
-    taskManager.enqueue({
+    const task: SpeechTask = {
       charaName: chara_id,
       text: text,
       isAquesTalkNotation,
@@ -99,20 +92,25 @@ function registerOnMessageHandler(eventBus: EventBus<AppEventMap>) {
         style: chara_voice.engine.style,
         preset: preset,
       },
-    });
+    };
+
+    eventBus.emit("addTask", task);
+    taskManager.enqueue(task);
   });
 }
 
-const isDev = import.meta.env.MODE =="development";
+const isDev = import.meta.env.MODE == "development";
 
 /**
  * Initializes the application by setting up event listeners and registering callbacks.
  *
  * @return {void}
  */
-function init(): void {
+async function init() {
   if (isTyranoDebugMode()) {
     console.log("debug mode");
+    const { addDevUi } = await import("./ui/addDevUi.ts");
+    addDevUi();
   }
 
   if (isDev) {
