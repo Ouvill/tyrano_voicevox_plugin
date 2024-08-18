@@ -175,7 +175,7 @@ const extendTags: Record<string, Tag> = {
   },
 
   /**
-   * #[voicevox_off]
+   * #[voicevox_layer]
    *
    * :group
    * ボイス・読み上げ
@@ -219,7 +219,7 @@ const extendTags: Record<string, Tag> = {
    * キャラのVOICEVOX設定
    *
    * :exp
-   * VoiceVoxの読み上げを無効化します
+   * ティラノスクリプトのキャラクターにVOICEVOXの話し手を紐付けます。
    *
    * :param
    * name = キャラクター名を指定します。
