@@ -12,6 +12,10 @@ type TaskMemoryStore = {
 
 const initialData: TaskMemoryStore = { data: {}, order: [] };
 
+function removeElement<T>(a: T[], b: T[]) {
+  return a.filter((element) => !b.includes(element));
+}
+
 function createTaskStore() {
   const { subscribe, update } = writable<TaskMemoryStore>(initialData);
 
@@ -54,11 +58,23 @@ function createTaskStore() {
     );
   }
 
+  function removeTasks(ids: string[]) {
+    update((state) =>
+      produce(state, (draft) => {
+        draft.order = removeElement(draft.order, ids);
+        ids.forEach((id) => {
+          delete draft.data[id];
+        });
+      }),
+    );
+  }
+
   return {
     subscribe,
     addTask,
     getTask,
     removeTask,
+    removeTasks,
   };
 }
 

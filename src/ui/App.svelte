@@ -12,12 +12,16 @@
   let controller = new AbortController();
   let generating = false;
   let progress = 0;
+
   const handleDownload = async () => {
     generating = true;
     try {
       const taskData = get(taskStore);
       const taskIds = [...new Set(taskData.order)];
       const tasks = taskIds.map((id) => taskData.data[id]);
+      if (tasks.length === 0) {
+        return;
+      }
 
       const signal = controller.signal;
       signal.addEventListener("abort", () => {
@@ -33,13 +37,13 @@
       const url = URL.createObjectURL(zip);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "voicevox_voice.zip";
+      a.download;
       a.click();
-
+      taskStore.removeTasks(taskIds);
       URL.revokeObjectURL(url);
     } finally {
       generating = false;
-      progress = 0
+      progress = 0;
     }
   };
 </script>
