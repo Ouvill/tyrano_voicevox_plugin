@@ -12,12 +12,28 @@
   let controller = new AbortController();
   let generating = false;
   let progress = 0;
+
+  function generateRandomString(length: number) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length),
+      );
+    }
+    return result;
+  }
+
   const handleDownload = async () => {
     generating = true;
     try {
       const taskData = get(taskStore);
       const taskIds = [...new Set(taskData.order)];
       const tasks = taskIds.map((id) => taskData.data[id]);
+      if (tasks.length === 0) {
+        return;
+      }
 
       const signal = controller.signal;
       signal.addEventListener("abort", () => {
@@ -32,14 +48,16 @@
 
       const url = URL.createObjectURL(zip);
       const a = document.createElement("a");
-      a.href = url;
-      a.download = "voicevox_voice.zip";
-      a.click();
+      const suffix = generateRandomString(3);
 
+      a.href = url;
+      a.download = `voicevox_sound_${suffix}.zip`;
+      a.click();
+      taskStore.removeTasks(taskIds);
       URL.revokeObjectURL(url);
     } finally {
       generating = false;
-      progress = 0
+      progress = 0;
     }
   };
 </script>
@@ -54,7 +72,7 @@
 
       <div class="table-container">
         {#if $taskStore.order.length === 0}
-          <p class="no-data">データはありません</p>
+          <p class="no-data">生成した音声データはありません</p>
         {:else}
           <table class="data-table">
             <thead>

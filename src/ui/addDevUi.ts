@@ -10,7 +10,7 @@ enablePatches();
 
 export function addDevUi() {
   const eventBus = EventBus.getInstance<AppEventMap>();
-  eventBus.on("addTask", (task) => {
+  eventBus.on("generatedSpeech", (task) => {
     taskStore.addTask(task);
   });
 
