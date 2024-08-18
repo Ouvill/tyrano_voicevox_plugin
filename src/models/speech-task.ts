@@ -1,5 +1,5 @@
 import { Preset } from "./store.ts";
-import { djb2Hash } from "../lib/djb2Hash.ts";
+import { djb2Hash } from "../lib/djb2-hash.ts";
 
 export interface VoiceVoxInfo {
   type: "voicevox";
