@@ -38,8 +38,8 @@ export class TyranoSoundPlayer {
 
       if (signal) {
         signal.addEventListener("abort", () => {
-          this.cancel()
-          reject("play abort ")
+          this.cancel();
+          reject("play abort ");
         });
       }
 
@@ -57,7 +57,7 @@ export class TyranoSoundPlayer {
   }
 
   private cancel() {
-    if (this.isPlaying ) {
+    if (this.isPlaying) {
       TYRANO.kag.ftag.startTag("stopse", { buf: this.buf, stop: true });
     }
   }

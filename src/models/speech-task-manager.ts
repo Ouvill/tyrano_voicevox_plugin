@@ -87,7 +87,7 @@ export class SpeechTaskManager {
         await tyranoPlayer.play({
           charaName: task.charaName,
           blob: voice_file,
-          signal
+          signal,
         });
       } catch (e) {
         if (signal.aborted) {

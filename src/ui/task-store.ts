@@ -1,4 +1,4 @@
-import {generateTaskId, SpeechTask} from "../models/speech-task.ts";
+import { generateTaskId, SpeechTask } from "../models/speech-task.ts";
 import { writable } from "svelte/store";
 import { produce } from "immer";
 
