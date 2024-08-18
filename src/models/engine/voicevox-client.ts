@@ -61,7 +61,12 @@ export class VoicevoxClient implements SpeechEngine {
     return data;
   }
 
-  async generate(task: SpeechTask, abortSignal: AbortSignal) {
+  async generate(
+    task: SpeechTask,
+    options?: Partial<{ signal: AbortSignal }>,
+  ) {
+    let abortSignal = options?.signal;
+
     try {
       const client = createClient<paths>({
         baseUrl: this.baseUrl,
@@ -121,7 +126,7 @@ export class VoicevoxClient implements SpeechEngine {
       }
       return voice;
     } catch (error) {
-      if (abortSignal.aborted) {
+      if (abortSignal?.aborted) {
         throw new AbortError("Speech generation aborted");
       }
       throw error;

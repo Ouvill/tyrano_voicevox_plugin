@@ -73,7 +73,7 @@ export class SpeechTaskManager {
         } catch (e) {
           const engine = this.engineManager.getEngine(task.engineInfo.type);
           this.currentEngine = engine;
-          voice_file = await engine.generate(task, signal);
+          voice_file = await engine.generate(task, { signal });
           eventBus.emit("generatedSpeech", task);
         }
 

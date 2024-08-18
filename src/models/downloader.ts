@@ -22,7 +22,7 @@ export class SpeechDownloader {
         const taskId = generateTaskId(task);
         const engine = engineManager.getEngine(task.engineInfo.type);
 
-        const voice_file = await engine.generate(task, signal);
+        const voice_file = await engine.generate(task, { signal });
 
         zip.file(`${taskId}.wav`, voice_file);
 
