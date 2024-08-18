@@ -1,5 +1,8 @@
 import { SpeechTask } from "../speech-task";
 
 export interface SpeechEngine {
-  generate(task: SpeechTask, abortSignal: AbortSignal): Promise<Blob>;
+  generate(
+    task: SpeechTask,
+    options?: Partial<{ signal: AbortSignal }>,
+  ): Promise<Blob>;
 }

@@ -108,7 +108,7 @@ const isDev = import.meta.env.MODE == "development";
 async function init() {
   if (isTyranoDebugMode()) {
     console.log("debug mode");
-    const { addDevUi } = await import("./ui/addDevUi.ts");
+    const { addDevUi } = await import("./ui/add-dev-ui.ts");
     addDevUi();
   }
 
