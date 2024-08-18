@@ -2,9 +2,46 @@
   import { isDevOpen } from "./store.ts";
   import { fade, fly } from "svelte/transition";
   import { taskStore } from "./task-store.ts";
+  import { SpeechDownloader } from "../models/downloader.ts";
+  import { get } from "svelte/store";
+  import { AbortError } from "../models/abort-error.ts";
 
   // ティラノスクリプトはlayer_menuのクラスのstyleが`display: none`以外の時イベントを実行しない。
   const disable_tyrano_event_class = "layer_menu";
+
+  let controller = new AbortController();
+  let generating = false;
+  let progress = 0;
+  const handleDownload = async () => {
+    generating = true;
+    try {
+      const taskData = get(taskStore);
+      const taskIds = [...new Set(taskData.order)];
+      const tasks = taskIds.map((id) => taskData.data[id]);
+
+      const signal = controller.signal;
+      signal.addEventListener("abort", () => {
+        controller = new AbortController();
+        throw new AbortError("downlaod aborted");
+      });
+
+      const downloader = new SpeechDownloader();
+      const zip = await downloader.generateZipFile(tasks, signal, (p) => {
+        progress = p;
+      });
+
+      const url = URL.createObjectURL(zip);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "voicevox_voice.zip";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    } finally {
+      generating = false;
+      progress = 0
+    }
+  };
 </script>
 
 {#if $isDevOpen}
@@ -38,8 +75,23 @@
         {/if}
       </div>
       <div class="download-container">
-        <p>音声をダウンロードする</p>
-        <button>ダウンロード</button>
+        <div>
+          <p>音声をダウンロードする</p>
+          <small
+            >ダウンロードした音声は解凍して<code>data/sound/voicevox</code
+            >に配置してください</small
+          >
+        </div>
+
+        {#if generating}
+          <div>
+            <p>{(progress * 100).toFixed(2)}%</p>
+          </div>
+        {/if}
+
+        <button disabled={generating} on:click={handleDownload}
+          >ダウンロード
+        </button>
       </div>
     </div>
   </div>
