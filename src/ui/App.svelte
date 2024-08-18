@@ -13,6 +13,18 @@
   let generating = false;
   let progress = 0;
 
+  function generateRandomString(length: number) {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(
+        Math.floor(Math.random() * characters.length),
+      );
+    }
+    return result;
+  }
+
   const handleDownload = async () => {
     generating = true;
     try {
@@ -36,8 +48,10 @@
 
       const url = URL.createObjectURL(zip);
       const a = document.createElement("a");
+      const suffix = generateRandomString(3);
+
       a.href = url;
-      a.download;
+      a.download = `voicevox_sound_${suffix}.zip`;
       a.click();
       taskStore.removeTasks(taskIds);
       URL.revokeObjectURL(url);
